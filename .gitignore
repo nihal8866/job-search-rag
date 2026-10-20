@@ -1,0 +1,35 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+env/
+
+# Python and notebook caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Generated data, embeddings, indexes, and downloaded models
+data/processed/
+data/indexes/
+models/
+.cache/
+chroma_db/
+outputs/
+tmp/
+*.log
+
+# Editors and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Excel lock files and the temporary root copy while Excel has it open
+~$*
+/LF Jobs.xlsx
