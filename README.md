@@ -4,7 +4,7 @@ A learning project to build a retrieval-augmented job search API from the suppli
 
 ## Status
 
-Repository structure and documentation scaffold are in place. The pipeline and API are not implemented yet.
+Dataset exploration and initial HTML cleaning are complete in `notebooks/01_data_exploration.ipynb`. The pipeline and API are not implemented yet.
 
 ## Planned pipeline
 
@@ -36,7 +36,18 @@ tests/             Pipeline and API verification
 
 ## Setup
 
-Python is the planned runtime. Dependencies and executable setup instructions will be added when implementation begins. `requirements.txt` is currently a placeholder.
+The exploration environment uses Python 3.10.11. From the project root in PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m pip check
+```
+
+`requirements.txt` records the current Windows development environment, including notebook tools. Installation from this snapshot in a fresh environment has not yet been verified.
+
+Open `notebooks/01_data_exploration.ipynb` in VS Code with the Python and Jupyter extensions, select the project `.venv` kernel, and run cells in order. The notebook reads the raw workbook and regenerates `data/processed/jobs_cleaned.jsonl`, which is intentionally ignored by Git. It preserves the original HTML and date strings alongside cleaned descriptions.
 
 Copy `.env.example` to `.env` when configuring model providers. Keep credentials in `.env`, which Git ignores.
 

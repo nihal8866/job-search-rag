@@ -9,8 +9,10 @@ Work in small steps: explain the purpose, implement or run a small piece, inspec
 - [x] Read the assignment and inspect the supplied dataset.
 - [x] Create the project structure and documentation scaffold.
 - [x] Initialize Git and connect the GitHub remote.
-- [ ] Audit missing values, duplicates, field types, and description lengths.
-- [ ] Clean HTML and chunk descriptions while preserving job metadata.
+- [x] Audit missing values, duplicates, field types, and description lengths.
+- [x] Clean HTML while preserving original descriptions and job metadata.
+- [x] Export cleaned jobs to JSONL and verify reloaded values after normalizing missing values for comparison.
+- [ ] Chunk descriptions while preserving job metadata.
 - [ ] Generate embeddings.
 - [ ] Store embeddings in a vector database.
 - [ ] Implement configurable top-N vector retrieval.
