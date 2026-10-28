@@ -36,7 +36,7 @@
 - [x] Compare vector-only, hybrid, and reranked retrieval on eight labeled known-item cases.
 - [x] Record initial latency, three fixed-evidence grounding cases, and API failure checks.
 - [ ] Expand to independently reviewed relevance labels, harder queries, and repeated benchmarks.
-- [ ] Correct observed answer-grounding/citation failures before final submission.
+- [x] Replace the observed free-form paraphrase/ID failure path with validated source-line answers and verify five regression cases.
 - [x] Add local setup instructions and API request examples.
 - [ ] Complete the report, limitations, and future enhancements.
 - [ ] Prepare the Google Docs report and verify reviewer access.
@@ -105,6 +105,22 @@ Eight source-derived known-item cases completed: vector/hybrid target Hit@1
 another relevant internship, so these are not exhaustive relevance judgments.
 Three fixed-evidence generation cases and prompt trials are recorded in
 evaluation/. The shorter prompt trial worsened grounding and was discarded.
-The longer tested revision remains selected and still has documented failures.
-The 93-test suite passes; this does not establish live-model semantic accuracy.
+At that checkpoint the longer tested revision was selected and still had
+documented failures. The 93-test suite passed; this did not establish live-model
+semantic accuracy. A subsequent source-selection change replaces free-form local
+answer prose; its separate results are recorded in the evaluation notes.
 See docs/evaluation.md for source review and remaining validation.
+
+## Source-selection answer revision
+
+The local model now selects numbered source lines rather than writing answer
+prose/citations. Application validation and rendering preserve source wording and
+job IDs. All five expanded fixed-evidence cases passed reference checks; assistant
+source review found supported skill quotes, honest abstentions, a correct salary
+range, and recorded location. Relevance/completeness still need broader review;
+the skill response included one less relevant line. All 99 automated tests pass.
+Earlier free-form failures are retained for comparison rather than overwritten.
+The revised adapter was also tested through a temporary real loopback API:
+health, generated query, empty location filter, and blank-query 422 passed.
+The generated query took approximately 41 seconds after startup in that run;
+this is an observation, not a benchmark. The test server was stopped afterward.

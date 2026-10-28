@@ -70,7 +70,17 @@ still produced unsupported qualifier wording and invalid citations in the fixed
 cases; a shorter trial restored availability citations but introduced unsupported
 API/direct-match claims and was discarded. All trial outputs are retained. The
 93 passing automated tests check implementation contracts, not model truthfulness.
-Correcting these observed failures remains necessary before submission.
+Those observations motivated a constrained answer revision: the model selects
+numbered source lines and the application validates and renders quotations plus
+actual job IDs. It no longer accepts model-written factual paraphrases or inline
+citation strings. Five expanded fixed-evidence cases passed reference checks.
+Assistant source review found preserved skill qualifiers, appropriate abstention
+for unknown salary/current status, the stated salary range with conditions, and
+recorded location. The skill case still selected a less relevant line and did not
+explicitly enumerate missing API evidence. Thus source fidelity improved by design,
+while selection relevance/completeness and independent review remain necessary.
+The current automated suite has 99 passing tests. See docs/answer_design.md for
+the implementation and evaluation/answer_review_extractive.json for review scope.
 
 For the exploratory query "Python backend developer working with APIs and databases", fusion ranked LF0247 first, while reranking placed LF0265 first. LF0247's inspected chunk supports backend work, Python as an accepted language, and database technologies. LF0265 explicitly requires Python but its inspected chunk does not establish API or database work. The results illustrate partial matches and the need to evaluate against explicit relevance criteria. They do not demonstrate overall improvement from hybrid search or reranking.
 
@@ -111,7 +121,7 @@ seconds with CPU retrieval on the development machine. It returned valid JSON
 and known citations, but the answer overstated some requirements. The prompt
 was subsequently tightened. Citation consistency does not establish factual
 grounding; systematic live-model evaluation remains pending. The suite now
-contains 87 passing tests, including 10 API contract tests with injected services.
+contains 99 passing tests, including 10 API contract tests with injected services.
 The real API response still grouped Kafka and MQ as databases, rather than
 messaging frameworks. This is a documented generation error to cover in the
 grounding evaluation.

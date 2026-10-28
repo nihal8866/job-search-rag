@@ -38,8 +38,8 @@ class RecordingGenerator:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--case", choices=["G01", "G02", "G03"])
-    parser.add_argument("--output", default="evaluation/answer_results.json")
+    parser.add_argument("--case", choices=["G01", "G02", "G03", "G04", "G05"])
+    parser.add_argument("--output", default="evaluation/answer_results_current.json")
     args = parser.parse_args()
     settings = Settings()
     chunks = pd.read_json(settings.chunks_path, lines=True, convert_dates=False).set_index("chunk_id")
@@ -51,6 +51,10 @@ def main():
          ["LF0265_chunk_000"], "No salary amount in excerpt; say it is not established without inventing a range."),
         ("G03", "Is the EPAM Senior Python Developer vacancy still accepting applications today?",
          ["LF0265_chunk_000"], "Historical listing date cannot confirm current application availability."),
+        ("G04", "What annual salary range is listed for the DIR, Equities Quant job?",
+         ["LF0001_chunk_001"], "Quote the stated $225,000.00 - $300,000.00 annualized range and preserve offer qualifiers."),
+        ("G05", "What is the recorded job location for the EPAM Senior Python Developer?",
+         ["LF0265_chunk_000"], "Use the provided location metadata: Brezno, Slovakia; do not infer remote eligibility."),
     ]
     results = []
     for case_id, query, ids, rubric in cases:
@@ -74,10 +78,12 @@ def main():
     result = {
         "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
         "model": settings.llm_model, "temperature": 0,
+        "generation_mode": "LLM source-line selection with application-rendered quotations and citations",
+        "system_prompt": SYSTEM_PROMPT,
         "prompt_sha256": hashlib.sha256(SYSTEM_PROMPT.encode()).hexdigest(),
         "chunks_sha256": hashlib.sha256(settings.chunks_path.read_bytes()).hexdigest(),
         "method": "Fixed source chunks with actual local generation; not an end-to-end retrieval evaluation.",
-        "limitations": "Three development cases, one run each. Semantic judgments require manual source review; citation consistency alone is insufficient.",
+        "limitations": "Fixed-evidence development cases, one run each. Semantic judgments require manual source review; citation consistency alone is insufficient.",
         "results": results,
     }
     path = PROJECT_ROOT / args.output

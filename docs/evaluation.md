@@ -75,14 +75,43 @@ here denotes the last trial, not the selected prompt. G01 passed reference check
 but regressed to unsupported API/direct-match claims and made Python mandatory
 for both jobs. G02 omitted its inline citation and was rejected. G03 correctly
 reported unknown availability with a valid citation. Times were 33.68, 11.01,
-and 12.95 seconds. The shorter prompt was discarded; the longer revision remains
-in answers.py, with a hash matching answer_results_revised.json. No citation
+and 12.95 seconds. The shorter prompt was discarded; at that checkpoint the longer
+revision was retained with a hash matching answer_results_revised.json. No citation
 validation was weakened and these are development iterations, not held-out gains.
 
-**Current limitation:** the selected prompt still has observed semantic and
-citation failures. The pipeline is functional but answer quality is not ready
-to be described as fully grounded. Further corrective work and independent
-review are required before final submission.
+**Checkpoint finding:** prompt-only changes still had observed semantic and
+citation failures. This prompted the source-selection change described below;
+the free-form results are retained as development observations.
+
+## Constrained source selection
+
+The local adapter now requests numbered evidence lines instead of answer prose.
+The application validates the choices, quotes source text, and renders actual
+job-ID citations. An empty selection yields an insufficient-evidence answer.
+The response API fields and retrieval pipeline remain unchanged.
+
+The first live extractive run (evaluation/answer_results_extractive.json) passed
+reference checks for G01-G03. G01 preserved the language alternatives but selected
+only the Python and backend lines, omitting available database evidence. G02 and
+G03 abstained without inventing salary/current status, with valid source IDs.
+Generation-only times were 11.46, 8.64, and 8.43 seconds. These observations do
+not establish general accuracy or a statistically supported latency gain.
+
+The selection prompt was clarified to cover distinct requested requirements.
+G04 (a known salary range) and G05 (recorded location metadata) were added as
+development checks against indiscriminate abstention. Their expanded run is in
+evaluation/answer_results_extractive_expanded.json. See docs/answer_design.md
+for the validation flow and remaining selection/completeness limitations.
+
+All five expanded cases passed reference checks. Assistant source review found
+that G01 now included backend and database lines while preserving alternatives
+and technical groupings; it also selected a less relevant design-solutions line.
+It does not explicitly enumerate missing API evidence. G02/G03 abstained with
+valid source IDs. G04 quoted the annualized salary range and its conditions; G05
+quoted the recorded location without claiming remote eligibility. Generation-only
+times were 12.79, 8.32, 8.52, 5.84, and 6.12 seconds. Detailed qualitative review
+is in evaluation/answer_review_extractive.json. These five cases are not evidence
+of general accuracy or a statistically supported latency improvement.
 
 Previous real HTTP checks confirmed a successful generated response, an unknown
 location returning empty jobs/citations without generation, and a blank query

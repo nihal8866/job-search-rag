@@ -54,3 +54,10 @@ class GroundedAnswerTests(unittest.TestCase):
         self.assertEqual(result["jobs"], [])
         self.assertEqual(result["cited_job_ids"], [])
         self.generator.generate.assert_not_called()
+
+    def test_brackets_in_blockquoted_evidence_are_not_citations(self):
+        self.generator.generate.return_value = GeneratedAnswer(
+            "Selected evidence [LF0001]:\n> [Pay transparency] Python and SQL.", ["LF0001"],
+        )
+        result = self.service.answer("query")
+        self.assertEqual(result["cited_job_ids"], ["LF0001"])

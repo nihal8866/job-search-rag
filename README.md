@@ -266,10 +266,13 @@ ever exposed, revoke/rotate it before addressing repository history.
 
 ## Grounded-answer interface
 
-`answers.py` defines a provider-independent generator protocol and system prompt.
-The prompt requires evidence-based answers, explicit partial matches, and job-ID
-citations. The service rejects empty answers, unknown citations, or disagreement
-between inline citations and declared IDs. Empty retrieval skips generation.
+`answers.py` defines a provider-independent generator protocol and source-selection
+prompt. The local adapter asks the model to select zero to three numbered source
+lines per job. A per-request JSON schema restricts choices to that job's lines.
+`evidence_answers.py` validates choices, copies the source text, and renders job-ID
+citations in application code. The model cannot add paraphrased requirements or
+write citation strings. Empty selections produce an explicit insufficient-evidence
+response; empty retrieval skips generation. The response JSON fields are unchanged.
 
 The `ask` command connects this service to the downloaded
 `qwen3:4b-instruct-2507-q4_K_M` model through Ollama on `127.0.0.1:11434`.
@@ -282,6 +285,10 @@ generation. `search` and `ingest` retain their CUDA default; `--device` override
 the selection. The adapter requests structured JSON, checks completion, and
 uses a conservative UTF-8 byte budget to leave room for output within its
 8,192-token context. Oversized evidence is rejected; reduce `--top-k` if needed.
-The model is unloaded after the response. Citation validation checks reference
-consistency; it does not prove factual grounding. Initial live checks showed
-requirement overstatements, so answer quality still needs systematic evaluation.
+The model is unloaded after the response. Selected lines preserve the source's
+qualifiers and technical groupings, but can still be irrelevant, incomplete, or
+cut off by chunk boundaries. Source quotations are not proof of suitability for
+every query requirement. Source metadata can be selected for company, location,
+level, and publication date; historical data cannot establish current availability.
+Earlier free-form trials are retained in evaluation/ for comparison. See
+[answer design](docs/answer_design.md) for the validation flow and limitations.

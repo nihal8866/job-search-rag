@@ -113,8 +113,13 @@ retrieval to reserve GPU memory for generation. It requests structured JSON
 with temperature zero, an 8,192-token context, and a 512-token output limit.
 A conservative input byte budget rejects oversized context before generation.
 Reference checks reject unknown or inconsistent citations, but do not prove
-semantic grounding. Live checks exposed requirement overstatements, so concise
-per-job paragraphs are requested and systematic grounding evaluation is pending.
+semantic grounding. Free-form trials exposed requirement overstatements and
+unreliable inline IDs. The current local adapter instead requests zero to three
+numbered source lines per job and renders quotations/citations in application
+code. Choices are schema-constrained and checked again before rendering; empty
+selections explicitly abstain. This removes model-written paraphrases/citation
+strings, while evidence relevance and completeness still need evaluation. See
+docs/answer_design.md and docs/evaluation.md for the tradeoff and observed results.
 
 ## Local API
 
@@ -125,5 +130,5 @@ work; a busy request receives 503 with Retry-After. Bad input/model limits retur
 422, local pipeline failures return 503, and unexpected errors return 500 without
 internal details. Health reports retrieval readiness, not Ollama availability.
 No-match filters return successful empty results without generation. The server
-binds to loopback for local review. The 87-test suite includes 10 HTTP contract
+binds to loopback for local review. The current 99-test suite includes 10 HTTP contract
 tests with injected services; model quality is evaluated separately.

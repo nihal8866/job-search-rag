@@ -1,0 +1,17 @@
+{
+  "reviewer": "Assistant source review; independent human review pending",
+  "results_file": "answer_results_extractive_expanded.json",
+  "scope": "Five fixed-evidence development cases, not a held-out end-to-end benchmark",
+  "observations": [
+    {"case_id": "G01", "reference_checks": "passed", "source_review": "Quoted lines preserve Python alternatives and the databases/messaging-framework grouping. Backend and database evidence is now included. No API experience is invented.", "remaining_limit": "One selected design-solutions line is less relevant; the response does not explicitly list API evidence as missing or prove every requirement is satisfied."},
+    {"case_id": "G02", "reference_checks": "passed", "source_review": "Empty selection produces insufficient-evidence wording with LF0265; no salary is invented."},
+    {"case_id": "G03", "reference_checks": "passed", "source_review": "Empty selection avoids claiming the historical vacancy is currently accepting applications; LF0265 citation is valid."},
+    {"case_id": "G04", "reference_checks": "passed", "source_review": "Quotes the stated $225,000.00 - $300,000.00 annualized range and retains experience, education, and skill-set conditions."},
+    {"case_id": "G05", "reference_checks": "passed", "source_review": "Quotes recorded location Brezno, Slovakia; no remote-work claim is added."}
+  ],
+  "limitations": [
+    "Schema/reference validation is automatic; semantic judgments here are assistant review.",
+    "Source copying prevents paraphrase invention but cannot guarantee relevant or complete line selection.",
+    "Historical source data is not independently fact-checked or verified as current."
+  ]
+}

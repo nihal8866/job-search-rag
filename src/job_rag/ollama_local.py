@@ -7,17 +7,7 @@ from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_ope
 
 from job_rag.answers import GeneratedAnswer
 from job_rag.config import Settings
-
-
-ANSWER_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "text": {"type": "string", "minLength": 1},
-        "cited_job_ids": {"type": "array", "items": {"type": "string"}},
-    },
-    "required": ["text", "cited_job_ids"],
-    "additionalProperties": False,
-}
+from job_rag.evidence_answers import render_selection, selection_request
 LOCAL_MODEL = "qwen3:4b-instruct-2507-q4_K_M"
 
 
@@ -47,9 +37,10 @@ class OllamaGenerator:
         self.opener = build_opener(ProxyHandler({}), NoRedirects())
 
     def generate(self, system_prompt: str, user_prompt: str) -> GeneratedAnswer:
+        user_prompt, schema, units = selection_request(user_prompt)
         system = (
             system_prompt + "\nReturn one JSON object with this schema:\n"
-            + json.dumps(ANSWER_SCHEMA)
+            + json.dumps(schema)
         )
         # A conservative byte budget for this byte-tokenized model avoids silently
         # losing source text. It reserves output tokens and chat-template overhead.
@@ -64,7 +55,7 @@ class OllamaGenerator:
                 {"role": "system", "content": system},
                 {"role": "user", "content": user_prompt},
             ],
-            "format": ANSWER_SCHEMA,
+            "format": schema,
             "stream": False,
             "keep_alive": 0,
             "options": {
@@ -97,9 +88,4 @@ class OllamaGenerator:
         except (ValueError, KeyError, TypeError, AttributeError):
             raise RuntimeError("Local Ollama returned an invalid structured response.") from None
 
-        if (not isinstance(generated, dict) or set(generated) != {"text", "cited_job_ids"}
-                or not isinstance(generated["text"], str)
-                or not isinstance(generated["cited_job_ids"], list)
-                or not all(isinstance(item, str) for item in generated["cited_job_ids"])):
-            raise RuntimeError("The local answer does not match the required schema.")
-        return GeneratedAnswer(generated["text"], generated["cited_job_ids"])
+        return render_selection(generated, units)
