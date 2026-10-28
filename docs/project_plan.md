@@ -22,9 +22,16 @@
 
 ## Remaining implementation
 
-- [ ] Move notebook logic into reusable Python modules.
-- [ ] Add configurable retrieval settings and explicit location handling.
+- [x] Centralize existing retrieval settings in src/job_rag/config.py.
+- [x] Extract keyword tokenization and RRF into retrieval.py with utility checks.
+- [x] Add RetrievalIndex to load matching Chroma/chunk IDs and run BM25 search.
+- [x] Add query embeddings, vector retrieval, and fused candidate search in reusable modules.
+- [x] Connect reusable cross-encoder reranking and distinct-job presentation.
+- [x] Add reproducible CLI ingestion for cleaning, chunking, embeddings, and indexing.
+- [x] Add editable package installation and a JSON search command.
+- [x] Add configurable retrieval settings and optional literal location filtering.
 - [ ] Integrate an LLM with grounded responses and source references.
+- [x] Prepare the provider-independent prompt, generator protocol, and citation checks.
 - [ ] Implement FastAPI POST /api/query with validation and error handling.
 - [ ] Evaluate vector-only, hybrid, and reranked retrieval on labeled queries.
 - [ ] Check latency, grounding, no-match behavior, and pipeline/API failures.
@@ -50,3 +57,15 @@ was (3618, 384), and the example query produced 34 fused candidates.
 the requirements files passed an installed-environment dry run. Notebook schemas,
 Python syntax, and documentation file links were checked. A fresh installation
 into a new environment and broader relevance evaluation remain pending.
+
+## Additional implementation verification
+
+The package installs in editable mode and provides `job-rag` and `python -m job_rag`.
+Full ingestion was run in a separate temporary project root against the original
+workbook. It produced 1,000 jobs, 3,618 chunks, 384-dimensional vectors, and a maximum
+input length of 438. Chunk IDs, text, contextual inputs, and vectors matched the
+notebook artifacts. The installed search CLI returned valid JSON and the expected
+first two jobs from the rebuilt database.
+
+The grounded-answer interface is tested with fake generator outputs only.
+Provider selection and live LLM verification remain required.

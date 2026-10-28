@@ -182,3 +182,5 @@ websocket-client==1.9.2
 websockets==16.1.1
 widgetsnbextension==4.0.16
 yarl==1.25.1
+wheel==0.48.0
+setuptools==65.5.0

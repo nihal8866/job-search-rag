@@ -52,8 +52,45 @@ Implementation choices, reasons, and current limitations for the notebook pipeli
 
 ## Pending decisions
 
+Reusable retrieval is now split into settings (`config.py`), tokenization/fusion
+(`retrieval.py`), index loading (`index.py`), hybrid candidates (`search.py`),
+pair scoring (`reranking.py`), and distinct-job orchestration (`pipeline.py`).
+Models are loaded once per pipeline instance and reused. Oversized queries or
+query/chunk pairs raise explicit errors instead of being silently truncated.
+Fifty-eight automated checks pass. A real GPU run against the saved collection
+reproduced notebook 04's top five distinct jobs and their evidence chunk IDs.
+This verifies the refactor's example behavior, not general retrieval quality.
+
+The reusable pipeline accepts an explicit optional location argument. It matches
+literal substrings in recorded locations, ignoring case, and derives a shared
+eligible chunk-ID subset. Chroma searches only those IDs and BM25 applies the
+same subset before its result limit. Missing locations cannot satisfy the filter.
+No eligible IDs returns an empty job table without embedding or reranker inference.
+The filter does not infer locations from query text, resolve aliases, or establish
+remote-work eligibility.
+
 - Evaluation-driven refinements to embedding model, chunk boundaries, and HTML cleaning.
 - Evaluation-driven refinements to candidate counts, fusion parameters, and job-level aggregation.
 - Reranker latency budget and model refinements.
 - LLM provider, model, prompt, and response schema.
 - Labeled evaluation queries and acceptance criteria.
+
+## Package, ingestion, and answer interface
+
+The editable package exposes CLI entry points while keeping notebook experiments
+available for explanation. Runtime dependencies match the direct requirements;
+notebook/build tools are development dependencies. JSON search output separates
+source evidence from optional ranking scores and sends model logs to stderr.
+
+Canonical ingestion follows the notebook cleaning and chunking rules, checks
+model input lengths and vector validity, and upserts a cosine-distance Chroma
+collection. Stale collection IDs or a model/metric mismatch are rejected rather
+than silently mixed. Generated artifacts are overwritten only after vector
+generation and indexing checks pass; ingestion is not a cross-file/database
+transaction, so interrupted builds must be rerun.
+
+The answer layer defines a generator protocol rather than choosing a provider
+without an agreed credential/cost/deployment setup. Its prompt limits answers to
+provided evidence and requires explicit partial matches and job-ID citations.
+Reference checks reject unknown or inconsistent citations, but do not prove
+semantic grounding. Actual LLM integration remains pending.

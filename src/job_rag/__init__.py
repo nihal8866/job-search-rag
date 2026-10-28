@@ -1,1 +1,1 @@
-"""Job retrieval RAG package. Implementation will be added incrementally."""
+"""Job retrieval RAG package."""
