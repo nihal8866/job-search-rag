@@ -39,11 +39,21 @@ Record a decision when evidence supports it. Distinguish planned choices from im
 - Artifacts: data/processed/job_embeddings.npy and data/processed/job_chunks.jsonl. Row positions associate vectors with chunk records; they must be saved and loaded together without independently reordering either artifact.
 - Status: embeddings generated. Saving the latest notebook and a final clean-kernel run remain to be verified. These checks do not establish retrieval quality.
 
+## 2026-10-28: Vector, hybrid, and reranked retrieval
+
+- Vector store: local Chroma PersistentClient at data/indexes/chroma, collection job_chunks_e5_small_v1, cosine distance, and explicitly supplied saved embeddings. Upsert in batches of 500 allows reruns for the current IDs. A stored record's text, metadata, and embedding were checked against the source. Collection and BM25 chunk-ID sets matched (3,618 IDs).
+- BM25: rank_bm25.BM25Okapi over title, company, category, level, full locations, tags, and chunk text. Missing fields become empty text in the keyword corpus. Case folding, C++/C# preservation, and individual CJK/kana character separation form a basic tokenizer. No stemming, translation, linguistic CJK segmentation, or stopword removal is implemented. Only positive-scoring BM25 candidates are selected.
+- Fusion: up to 20 chunks per retriever, equal contributions of 1/(60+rank), and deterministic chunk-ID tie breaking. The example query produced 34 unique candidate chunks. These parameters remain initial choices pending evaluation.
+- Reranker: BAAI/bge-reranker-v2-m3 via Sentence Transformers CrossEncoder on CUDA, batch size four. Strip the E5 passage prefix; tokenize query and contextual chunk together. All 34 example pairs fit the configured 512-token limit (maximum 435). Scores are ranking signals, not calibrated guarantees of relevance.
+- Job presentation: keep the first chunk per job after sorting by the applicable ranking. This ranks jobs by their best candidate chunk; it does not aggregate the full description.
+- Observation: the Python/backend/API/database query ranked LF0247 first after fusion and LF0265 first after reranking. LF0265's retrieved text explicitly supports Python but does not establish API/database experience. Do not claim measured quality gains from this single example.
+- Organization: notebook 03 contains vector storage, vector retrieval, and baseline observations; notebook 04 contains its own imports/data loading, BM25, Chroma reconnection, vector candidates, fusion, reranking, and evidence inspection. Original code and outputs were preserved when split. Schema and syntax checks passed; fresh-kernel execution of the separated notebooks remains pending.
+- References: https://docs.trychroma.com/reference/python/client ; https://github.com/dorianbrown/rank_bm25 ; https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf ; https://huggingface.co/BAAI/bge-reranker-v2-m3
+
 ## Pending decisions
 
-- Vector database.
 - Evaluation-driven refinements to embedding model, chunk boundaries, and HTML cleaning.
-- Candidate counts, fusion parameters, and job-level aggregation.
-- Reranker model and latency budget.
+- Evaluation-driven refinements to candidate counts, fusion parameters, and job-level aggregation.
+- Reranker latency budget and model refinements.
 - LLM provider, model, prompt, and response schema.
 - Labeled evaluation queries and acceptance criteria.

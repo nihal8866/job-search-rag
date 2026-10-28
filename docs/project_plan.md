@@ -15,11 +15,14 @@ Work in small steps: explain the purpose, implement or run a small piece, inspec
 - [x] Chunk descriptions while preserving job metadata.
 - [x] Generate embeddings and validate numerical values and reload consistency.
 - [ ] Save and verify the final chunking notebook with current cells and outputs in execution order.
-- [ ] Store embeddings in a vector database.
-- [ ] Implement configurable top-N vector retrieval.
-- [ ] Implement BM25 keyword retrieval and rank fusion (hybrid search).
-- [ ] Add a cross-encoder reranker.
-- [ ] Consolidate chunks into distinct job listings.
+- [x] Store embeddings in a persistent cosine-distance Chroma collection.
+- [x] Demonstrate top-N vector retrieval in a notebook.
+- [x] Implement BM25 keyword retrieval and rank fusion in a notebook.
+- [x] Add a multilingual cross-encoder reranker in a notebook.
+- [x] Present distinct jobs using the best retrieved chunk per job.
+- [ ] Verify notebooks 03 and 04 from fresh kernels after separating their cells.
+- [ ] Move the notebook pipeline into reusable Python modules with configurable retrieval settings.
+- [ ] Implement explicit location-filter handling.
 - [ ] Integrate an LLM with a grounded, concise prompt.
 - [ ] Implement FastAPI `POST /api/query`.
 - [ ] Test retrieval quality, grounding, and endpoint behavior.
