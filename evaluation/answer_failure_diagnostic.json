@@ -1,0 +1,28 @@
+{
+  "recorded_at_utc": "2026-10-28T10:56:03.990662+00:00",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "temperature": 0,
+  "prompt_sha256": "91272dfda19704a38f8d164736f9793535121b32715417e2a355580301a1dcb2",
+  "chunks_sha256": "b3c97c700e467e32afb951b6a522ec6565da040b744ac656cad7c39b60f424ea",
+  "method": "Fixed source chunks with actual local generation; not an end-to-end retrieval evaluation.",
+  "limitations": "Three development cases, one run each. Semantic judgments require manual source review; citation consistency alone is insufficient.",
+  "results": [
+    {
+      "case_id": "G03",
+      "query": "Is the EPAM Senior Python Developer vacancy still accepting applications today?",
+      "source_chunk_ids": [
+        "LF0265_chunk_000"
+      ],
+      "review_rubric": "Historical listing date cannot confirm current application availability.",
+      "seconds": 13.50112640000225,
+      "error_type": "RuntimeError",
+      "reference_validation": "not passed",
+      "rejected_generated_output": {
+        "text": "The EPAM Senior Python Developer (with GenAI) vacancy requires high proficiency in Python and experience or general knowledge in Generative AI and Large Language Models. The publication date of the job is 2024-10-30, but the sources do not specify whether applications are currently being accepted or if the position has closed.",
+        "cited_job_ids": [
+          "LF0265"
+        ]
+      }
+    }
+  ]
+}

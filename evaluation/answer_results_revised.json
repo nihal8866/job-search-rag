@@ -1,0 +1,99 @@
+{
+  "recorded_at_utc": "2026-10-28T10:57:07.620779+00:00",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "temperature": 0,
+  "prompt_sha256": "292abd413232b135cedc93fddbf9defbf42490c2979e13c6101a45bc7220b63a",
+  "chunks_sha256": "b3c97c700e467e32afb951b6a522ec6565da040b744ac656cad7c39b60f424ea",
+  "method": "Fixed source chunks with actual local generation; not an end-to-end retrieval evaluation.",
+  "limitations": "Three development cases, one run each. Semantic judgments require manual source review; citation consistency alone is insufficient.",
+  "results": [
+    {
+      "case_id": "G01",
+      "query": "Python backend developer working with APIs and databases",
+      "source_chunk_ids": [
+        "LF0265_chunk_000",
+        "LF0247_chunk_001"
+      ],
+      "review_rubric": "Separate Python/GenAI from backend/database evidence; do not invent API work or classify messaging frameworks as databases.",
+      "seconds": 20.134566799999448,
+      "response": {
+        "answer": "The Senior Python Developer (with GenAI) role at EPAM Systems in Brezno, Slovakia requires high proficiency in Python and experience or general knowledge in Generative AI and Large Language Models, with familiarity optional in AWS, Azure, or GCP [LF0265]. The Backend Software Engineer role at TikTok in Singapore requires at least 5 years of experience with Python, Java, or Golang, and a deep understanding of databases and messaging frameworks such as MySQL, Redis, Kafka, and MQ [LF0247].",
+        "cited_job_ids": [
+          "LF0265",
+          "LF0247"
+        ],
+        "jobs": [
+          {
+            "rank": 1,
+            "job_id": "LF0265",
+            "title": "Senior Python Developer (with GenAI)",
+            "company": "EPAM Systems",
+            "location": "Brezno, Slovakia",
+            "level": "Senior Level",
+            "publication_date": "2024-10-30T00:44:23Z",
+            "source_chunk_id": "LF0265_chunk_000",
+            "evidence": "We are seeking a\nSenior Python Developer (with GenAI)\nto join the project, which involves adoption of Artificial Intelligence solutions by our clients and focusing on generative AI.\nIn this role, you will be responsible for delivering multiple Proof of Concepts (POCs) and solving challenges using generative AI. Our approach is fluid and dynamic. This is a role that offers the freedom to innovate and evolve.\n#LI-DNI\nResponsibilities\nDesign and integrate Generative AI solutions with existing systems or create new applications, ensuring the adoption of the latest advancements in Generative AI\nAct as the main point of contact for clients, responsible for gathering requirements and providing status updates\nCommunicate project progression to stakeholders, and present suitable architecture solutions based on business requests\nCollaborate with clients throughout the project timeline\nTackle unique challenges each PoC presents, with swift adaptation\nConsult with clients on potential use cases, despite the lack of extensively documented requirements\nShowcase the potential of custom AI solutions regularly, and flexibly adjust the approach as needed\nSupport the transition of PoC projects to production phase\nRequirements\nExperience or general knowledge in Generative AI and Large Language Models; software engineering expertise in these areas is not required\nProven capability as an individual contributor\nStrong prototyping coding and software development skills\nUnderstanding of differences between PoCs, MVPs, and enterprise development approaches\nGenuine engineering mindset, with an interest towards Research & Development\nHigh proficiency in Python is required\nFamiliarity with any of AWS, Azure, GCP\nNice to have\nExperience with JavaScript\nWe offer\nOpportunity to work in a fast-paced, agile, software engineering culture\nBenefit program (5 weeks of vacation, 5 paid sick days",
+            "scores": {
+              "rrf": null,
+              "reranker": null,
+              "vector_distance": null,
+              "bm25": null
+            }
+          },
+          {
+            "rank": 2,
+            "job_id": "LF0247",
+            "title": "Backend Software Engineer - Global E-commerce (Governance Service)",
+            "company": "TikTok",
+            "location": "Singapore",
+            "level": "Senior Level",
+            "publication_date": "2025-03-27T00:30:14Z",
+            "source_chunk_id": "LF0247_chunk_001",
+            "evidence": "tical analysis.\n- Update software, enhances existing software capabilities, and develops and direct software testing and validation procedures.\nQualifications\nMinimum Qualifications:\n- Bachelor's or higher degree in Computer Science, Information Technology, Programming & System Analysis, Science (Computer Studies) or related discipline.\n- Candidate should have at least 5 years of experience in developing highly scalable backend services and systems using at least one of the following programming languages: Java, Golang, or Python.\n- Strong problem-solving skills and proficiency in software programming are essential, with a focus on good code design and coding style.\n- A deep understanding of data structures, algorithm design and analysis, networking, data security, and highly scalable systems design is expected.\n- In-depth knowledge of common databases and messaging frameworks such as MySQL, Redis, Kafka, and MQ is required.\nPreferred Qualifications:\n- Capable of providing elegant and efficient design solutions.",
+            "scores": {
+              "rrf": null,
+              "reranker": null,
+              "vector_distance": null,
+              "bm25": null
+            }
+          }
+        ]
+      },
+      "reference_validation": "passed"
+    },
+    {
+      "case_id": "G02",
+      "query": "What is the exact annual salary for the Senior Python Developer at EPAM?",
+      "source_chunk_ids": [
+        "LF0265_chunk_000"
+      ],
+      "review_rubric": "No salary amount in excerpt; say it is not established without inventing a range.",
+      "seconds": 12.33761510000113,
+      "error_type": "RuntimeError",
+      "reference_validation": "not passed",
+      "rejected_generated_output": {
+        "text": "The exact annual salary for the Senior Python Developer at EPAM is not specified in the provided source. The job posting highlights requirements such as high proficiency in Python and experience or general knowledge in Generative AI, but does not mention a salary figure [LF0260].",
+        "cited_job_ids": [
+          "LF0265"
+        ]
+      }
+    },
+    {
+      "case_id": "G03",
+      "query": "Is the EPAM Senior Python Developer vacancy still accepting applications today?",
+      "source_chunk_ids": [
+        "LF0265_chunk_000"
+      ],
+      "review_rubric": "Historical listing date cannot confirm current application availability.",
+      "seconds": 11.241490199998225,
+      "error_type": "RuntimeError",
+      "reference_validation": "not passed",
+      "rejected_generated_output": {
+        "text": "The EPAM Senior Python Developer (with GenAI) vacancy does not specify whether applications are currently being accepted, so it is not established if the position is open for applications today. [LF026",
+        "cited_job_ids": [
+          "LF0265"
+        ]
+      }
+    }
+  ]
+}

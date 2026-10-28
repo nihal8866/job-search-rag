@@ -1,6 +1,6 @@
 # Job Search RAG - Technical Report (Draft)
 
-Status: working draft with data preparation, embeddings, reusable retrieval modules, and exploratory results. LLM integration, API, broader evaluation, and final reproducibility details remain pending. A Google Docs version is required for final submission.
+Status: working draft with data preparation, embeddings, reusable retrieval modules, local LLM generation, a local FastAPI interface, and exploratory results. Broader evaluation and final reproducibility details remain pending. A Google Docs version is required for final submission.
 
 ## 1. Problem and dataset
 
@@ -36,17 +36,41 @@ job results while retaining evidence text and chunk identifiers. Fifty-eight
 automated utility/orchestration checks pass; a real GPU run reproduced the
 notebook example's five distinct jobs in the same order. Data preparation is also available through the installed ingestion command.
 
-The development environment is Windows with Python 3.10.11 and an NVIDIA GPU. The README documents dependency installation and notebook execution order. Model files require a download on first use. The installed job-rag command supports ingestion and JSON search. The required API is still pending.
+The development environment is Windows with Python 3.10.11 and an NVIDIA GPU. The README documents dependency installation and notebook execution order. Model files require a download on first use. The installed job-rag command supports ingestion, JSON search, and local answers. FastAPI provides the HTTP interface.
 
 ## 4. Example usage
 
-Planned endpoint: `POST /api/query`.
+Implemented endpoint: `POST /api/query`.
 
-The endpoint is not implemented yet. Request/response examples will be documented after end-to-end validation.
+Requests include query, optional top_k (default 2, range 1-5), and optional literal location filter. Responses contain a generated answer, cited job IDs, retrieved evidence and scores, and the normalized request fields. Empty retrieval skips generation. Validation failures return 422, busy/local pipeline failures return 503, and unexpected errors return sanitized 500 responses. One shared service is loaded during startup with CPU retrieval and local Ollama generation. Setup and PowerShell request examples are in docs/api_usage.md. This is a local review configuration; broader API and grounding evaluation remain pending.
 
 ## 5. Evaluation and interpretation
 
-Pending: labeled query set, relevance criteria, metrics, comparison of vector-only/hybrid/reranked search, latency, grounding checks, and failure examples.
+An initial known-item comparison used eight assistant-curated source-derived
+queries, covering six categories and a Chinese query. Vector and hybrid search
+found all eight target jobs at rank 1. Reranking found seven at rank 1 and one
+at rank 2; every method found all eight targets within five jobs. MRR@5 was
+1.0000, 1.0000, and 0.9375, respectively. The alternate first result in the last
+case is another relevant meal-plan marketing internship. These are target-discovery
+metrics with incomplete relevance judgments, not overall accuracy or exhaustive
+recall. No general improvement from the optional enhancements was demonstrated.
+
+Mean retrieval-stage times in one CUDA run were 0.122 seconds (vector), 0.173
+(hybrid), and 6.476 (reranked), excluding model startup and generation. These
+are not CPU API latency estimates. Three fixed-evidence local-generation cases
+tested partial matches, missing salary, and current availability. The initial
+run exposed technical-grouping/qualifier errors and an answer rejected for
+missing inline citations. Initial and revised outputs are retained separately.
+See docs/evaluation.md and evaluation/ for methodology, results, provenance, and
+remaining independent review. Broader judged relevance and repeated performance
+measurements remain pending.
+
+Prompt trials did not eliminate grounding problems. The selected longer revision
+still produced unsupported qualifier wording and invalid citations in the fixed
+cases; a shorter trial restored availability citations but introduced unsupported
+API/direct-match claims and was discarded. All trial outputs are retained. The
+93 passing automated tests check implementation contracts, not model truthfulness.
+Correcting these observed failures remains necessary before submission.
 
 For the exploratory query "Python backend developer working with APIs and databases", fusion ranked LF0247 first, while reranking placed LF0265 first. LF0247's inspected chunk supports backend work, Python as an accepted language, and database technologies. LF0265 explicitly requires Python but its inspected chunk does not establish API or database work. The results illustrate partial matches and the need to evaluate against explicit relevance criteria. They do not demonstrate overall improvement from hybrid search or reranking.
 
@@ -63,7 +87,7 @@ Current limitations include historical listings, location filtering without alia
 
 ## 8. Reproducibility and submission
 
-On October 28, 2026, all four revised notebooks completed in separate fresh kernels in the existing project environment using cached model files. Dependency compatibility checks passed. Fresh-environment installation, full API verification, final report publication, and reviewer-access checks remain pending.
+On October 28, 2026, all four revised notebooks completed in separate fresh kernels in the existing project environment using cached model files. Dependency compatibility checks passed. A real loopback API check passed health, generated-query, empty-filter-result, and blank-query validation checks. One query took about 55 seconds after startup. Fresh-environment installation, broader failure/grounding evaluation, final report publication, and reviewer-access checks remain pending.
 
 ## Command-line and grounded-answer preparation
 
@@ -76,6 +100,18 @@ database. Optional missing values are serialized as JSON null.
 
 A provider-independent answer service and prompt are prepared. Answers must refer
 to known retrieved job IDs, and declared citations must match inline references.
-Empty retrieval bypasses generation. These checks use fake generator outputs;
-no hosted API or local generative model is connected. Citation consistency does
-not establish factual grounding, which requires live-model evaluation.
+Empty retrieval bypasses generation. Unit checks use fake generator outputs;
+the service also connects to a downloaded Qwen3 4B instruct model through local
+Ollama. The ask command returns a generated answer plus source excerpts and
+citations without a paid API dependency. The adapter restricts requests to
+loopback, disables proxies/redirects, and has no cloud fallback.
+
+A full retrieval, reranking, and local generation run took approximately 97
+seconds with CPU retrieval on the development machine. It returned valid JSON
+and known citations, but the answer overstated some requirements. The prompt
+was subsequently tightened. Citation consistency does not establish factual
+grounding; systematic live-model evaluation remains pending. The suite now
+contains 87 passing tests, including 10 API contract tests with injected services.
+The real API response still grouped Kafka and MQ as databases, rather than
+messaging frameworks. This is a documented generation error to cover in the
+grounding evaluation.

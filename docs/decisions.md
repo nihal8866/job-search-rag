@@ -7,7 +7,7 @@ Implementation choices, reasons, and current limitations for the notebook pipeli
 - Decision: build job retrieval with RAG, including both optional enhancements.
 - Reason: the assignment explicitly requests job search, and both hybrid search and reranking were selected for this project.
 - Scope: Python, FastAPI, vector retrieval plus BM25, Reciprocal Rank Fusion, a cross-encoder reranker, and an LLM response stage.
-- Current status: notebook retrieval is implemented; LLM integration and API delivery remain pending.
+- Current status: reusable retrieval, local LLM generation, and the local FastAPI interface are implemented; broader evaluation remains pending.
 
 ## 2026-10-20: Repository organization
 
@@ -72,7 +72,7 @@ remote-work eligibility.
 - Evaluation-driven refinements to embedding model, chunk boundaries, and HTML cleaning.
 - Evaluation-driven refinements to candidate counts, fusion parameters, and job-level aggregation.
 - Reranker latency budget and model refinements.
-- LLM provider, model, prompt, and response schema.
+- Evaluation-driven prompt and response-schema refinements.
 - Labeled evaluation queries and acceptance criteria.
 
 ## Package, ingestion, and answer interface
@@ -83,7 +83,9 @@ The user requires no paid API, subscription, or hosting costs. Answer generation
 will run locally through Ollama, initially using
 qwen3:4b-instruct-2507-q4_K_M (approximately 2.5 GB download). No cloud fallback
 will be added. Ollama's cloud features should be disabled in the server environment.
-The local model and adapter have not been installed or verified yet.
+The local model and adapter are installed and a full CLI generation check has
+completed. The adapter accepts only the selected local model on 127.0.0.1,
+disables proxies/redirects, and has no cloud fallback. No API key is required.
 
 The 8 GB GPU is also used by retrieval models. Initial integration can place
 retrieval/reranking on CPU to reserve GPU memory for generation; benchmark actual
@@ -104,8 +106,24 @@ than silently mixed. Generated artifacts are overwritten only after vector
 generation and indexing checks pass; ingestion is not a cross-file/database
 transaction, so interrupted builds must be rerun.
 
-The answer layer defines a generator protocol rather than choosing a provider
-without an agreed credential/cost/deployment setup. Its prompt limits answers to
-provided evidence and requires explicit partial matches and job-ID citations.
+The answer layer uses a generator protocol with a local Ollama implementation.
+Its prompt limits answers to provided evidence and requires explicit partial
+matches and job-ID citations. The ask command defaults to two jobs and CPU
+retrieval to reserve GPU memory for generation. It requests structured JSON
+with temperature zero, an 8,192-token context, and a 512-token output limit.
+A conservative input byte budget rejects oversized context before generation.
 Reference checks reject unknown or inconsistent citations, but do not prove
-semantic grounding. Actual LLM integration remains pending.
+semantic grounding. Live checks exposed requirement overstatements, so concise
+per-job paragraphs are requested and systematic grounding evaluation is pending.
+
+## Local API
+
+FastAPI exposes POST /api/query with typed JSON requests and evidence responses.
+The lifespan loads one reusable answer service. CPU retrieval reserves GPU memory
+for Ollama. One worker and a nonblocking inference lock avoid overlapping model
+work; a busy request receives 503 with Retry-After. Bad input/model limits return
+422, local pipeline failures return 503, and unexpected errors return 500 without
+internal details. Health reports retrieval readiness, not Ollama availability.
+No-match filters return successful empty results without generation. The server
+binds to loopback for local review. The 87-test suite includes 10 HTTP contract
+tests with injected services; model quality is evaluated separately.

@@ -30,12 +30,14 @@
 - [x] Add reproducible CLI ingestion for cleaning, chunking, embeddings, and indexing.
 - [x] Add editable package installation and a JSON search command.
 - [x] Add configurable retrieval settings and optional literal location filtering.
-- [ ] Integrate an LLM with grounded responses and source references.
+- [x] Integrate a local LLM with source references and structured responses.
 - [x] Prepare the provider-independent prompt, generator protocol, and citation checks.
-- [ ] Implement FastAPI POST /api/query with validation and error handling.
-- [ ] Evaluate vector-only, hybrid, and reranked retrieval on labeled queries.
-- [ ] Check latency, grounding, no-match behavior, and pipeline/API failures.
-- [ ] Add verified setup and API request/response examples.
+- [x] Implement FastAPI POST /api/query with validation and error handling.
+- [x] Compare vector-only, hybrid, and reranked retrieval on eight labeled known-item cases.
+- [x] Record initial latency, three fixed-evidence grounding cases, and API failure checks.
+- [ ] Expand to independently reviewed relevance labels, harder queries, and repeated benchmarks.
+- [ ] Correct observed answer-grounding/citation failures before final submission.
+- [x] Add local setup instructions and API request examples.
 - [ ] Complete the report, limitations, and future enhancements.
 - [ ] Prepare the Google Docs report and verify reviewer access.
 - [ ] Verify the complete codebase and submit the GitHub repository link.
@@ -50,7 +52,8 @@ fallback to a billable cloud provider. Electricity and internet remain ordinary
 local operating costs rather than project service charges.
 
 The selected direction for answer generation is Ollama with a quantized local
-Qwen3 4B instruct model. Installation and real generation checks are pending.
+Qwen3 4B instruct model. Installation and a full command-line generation check
+have completed. Grounding evaluation remains pending.
 
 The assignment's title and requirements specify job-data RAG. An isolated sentence
 about diabetes classification appears unrelated and is treated as a copy-paste error.
@@ -77,5 +80,31 @@ input length of 438. Chunk IDs, text, contextual inputs, and vectors matched the
 notebook artifacts. The installed search CLI returned valid JSON and the expected
 first two jobs from the rebuilt database.
 
-The grounded-answer interface is tested with fake generator outputs only.
-Provider selection and live LLM verification remain required.
+The local Ollama adapter is connected. A full CPU retrieval/reranking plus local
+generation check returned valid JSON and known citations in approximately 97
+seconds on the development machine. This is one observed run, not a benchmark.
+Initial output overstated some requirements; the prompt was tightened and
+factual grounding remains an explicit evaluation task.
+
+## API verification - October 28, 2026
+
+The 87-test suite passed, including 10 API contract checks. A temporary Uvicorn
+server bound to 127.0.0.1 was tested with real cached retrieval models and local
+Ollama. GET /health succeeded; POST /api/query returned expected jobs LF0265 and
+LF0247, valid JSON, and matching known citations. The query took approximately
+55 seconds after startup. An unknown-location request returned empty results;
+a blank query returned 422. The temporary server was stopped after testing.
+This observed timing is not a latency benchmark. The generated text still
+grouped Kafka and MQ as databases instead of messaging frameworks, so semantic
+grounding remains unresolved and must be evaluated before submission.
+
+## Evaluation checkpoint
+
+Eight source-derived known-item cases completed: vector/hybrid target Hit@1
+8/8, reranked 7/8; all target Hit@5 values 8/8. One displaced target was behind
+another relevant internship, so these are not exhaustive relevance judgments.
+Three fixed-evidence generation cases and prompt trials are recorded in
+evaluation/. The shorter prompt trial worsened grounding and was discarded.
+The longer tested revision remains selected and still has documented failures.
+The 93-test suite passes; this does not establish live-model semantic accuracy.
+See docs/evaluation.md for source review and remaining validation.

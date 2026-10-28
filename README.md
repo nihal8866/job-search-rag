@@ -6,15 +6,16 @@ Reciprocal Rank Fusion (RRF), and cross-encoder reranking.
 The experimental workflow runs in notebooks. A reusable retrieval pipeline under
 `src/job_rag/` now combines index loading, BM25, query embeddings, vector retrieval,
 rank fusion, cross-encoder reranking, and distinct-job presentation. Ingestion
-and search also run through the installed command-line interface. A grounded-answer
-prompt and provider interface are prepared; a live LLM adapter, FastAPI, and broader
-evaluation remain pending.
+and search also run through the installed command-line interface. Grounded answer
+generation uses a local Qwen model through Ollama. FastAPI exposes this pipeline
+through POST /api/query. Broader evaluation and submission preparation remain pending.
 
 ## Pipeline
 
 ```text
 Excel -> HTML cleaning -> overlapping chunks -> embeddings -> Chroma
 Query -> vector search + BM25 -> RRF -> cross-encoder -> distinct jobs
+Distinct jobs + source excerpts -> local Qwen -> cited answer
 ```
 
 | Component | Current configuration |
@@ -27,6 +28,7 @@ Query -> vector search + BM25 -> RRF -> cross-encoder -> distinct jobs
 | Fusion | Up to 20 chunks per retriever; RRF k=60 |
 | Reranker | BAAI/bge-reranker-v2-m3; batches of 4 |
 | Job presentation | Best-scoring retrieved chunk per job |
+| Answer model | Local Ollama qwen3:4b-instruct-2507-q4_K_M |
 
 ## Setup
 
@@ -66,6 +68,7 @@ stages without opening a notebook:
 job-rag ingest
 job-rag search "Python backend developer working with APIs and databases" --top-k 5
 job-rag search "Python backend developer" --location "New York" --top-k 3
+job-rag ask "Python backend developer working with APIs and databases" --top-k 2
 ```
 
 `ingest` reads `data/raw/LF Jobs.xlsx`, rebuilds cleaned records and aligned
@@ -131,7 +134,9 @@ API or database work. This is a functional example, not a measured quality gain.
 - Keyword tokenization has a basic CJK fallback without translation or stemming.
 - Token windows can split sentences and retain company boilerplate.
 - Ranking by a single chunk can miss requirements elsewhere in a job description.
-- Labeled retrieval evaluation, latency measurements, LLM grounding, and API checks remain pending.
+- Initial known-item and fixed-evidence generation checks are recorded in
+  [evaluation notes](docs/evaluation.md); broader relevance/grounding evaluation
+  and repeated latency benchmarks remain pending.
 
 ## Layout and documentation
 
@@ -139,15 +144,15 @@ API or database work. This is a functional example, not a measured quality gain.
 data/raw/       Supplied workbook
 docs/           Assignment, decision notes, report draft, and checklist
 notebooks/      Data preparation and retrieval experiments
-src/job_rag/    Reusable hybrid retrieval and reranked job-search pipeline
-scripts/        Reserved for pipeline entry points
-tests/          Retrieval utility checks; pipeline and API coverage pending
+src/job_rag/    Ingestion, retrieval, reranking, and local answer generation
+scripts/        Repository secret-pattern checker
+tests/          Component, CLI, and API contract checks
 ```
 
 See [engineering decisions](docs/decisions.md), the [report draft](docs/report.md),
 the [completion checklist](docs/project_plan.md), and the
 [assignment](docs/GenAI_Takeaway_Assignment.pdf). Final delivery also requires
-the complete API, evaluation, and a Google Docs report.
+evaluation, fresh-environment verification, and a Google Docs report.
 
 ## Utility checks
 
@@ -170,6 +175,47 @@ also checked. Generator outputs are mocked; those checks are not live LLM
 validation. A full isolated CLI ingestion reproduced all 3,618 notebook chunks and
 vectors, and the installed CLI returned LF0265 and LF0247 with evidence for the
 example query.
+
+## Local API
+
+Keep Ollama running with cloud features disabled. From the project root in the
+activated environment, start one worker bound to this computer:
+
+```powershell
+python -m uvicorn job_rag.api:app --host 127.0.0.1 --port 8000 --workers 1
+```
+
+`python -m uvicorn` starts the installed ASGI server. `job_rag.api:app` identifies
+the application. `--host 127.0.0.1` keeps the listener on this computer, `--port
+8000` selects its port, and `--workers 1` avoids loading multiple model copies.
+Wait for `Application startup complete`. Stop with Ctrl+C. Do not run ingestion
+against the same database while the server is using it.
+
+Open [API docs](http://127.0.0.1:8000/docs), expand POST /api/query, choose
+**Try it out**, and use:
+
+```json
+{"query": "Python backend developer working with APIs and databases", "top_k": 2}
+```
+
+`query` is the search question. `top_k` selects 1-5 distinct jobs (default 2).
+Optional `location` applies the existing literal location filter. More sources
+may exceed the local model's conservative evidence budget. The response contains
+`answer`, `cited_job_ids`, full `jobs` evidence and scores, `query`, and
+`location_filter`. No match is HTTP 200 with empty jobs/citations and an
+explanatory answer; an unfiltered vector search can still return partial matches.
+
+GET `/health` confirms startup and retrieval readiness; it does not probe Ollama.
+Invalid bodies or model input/context limits return 422. Busy inference or an
+unavailable/failed local generation pipeline returns 503; unexpected internal
+errors return 500. Error bodies omit internal exception details. Only one query
+runs at a time; busy callers receive `Retry-After: 5`. Retrieval models are reused
+on CPU, and generation uses the local Ollama adapter. This configuration is for
+local development and review, without public hosting or authentication.
+
+See [the API walkthrough](docs/api_usage.md) for a PowerShell request and the
+verification record. Swagger UI assets may require internet on first load;
+PowerShell requests work without loading that UI.
 
 ## Reusable job search
 
@@ -197,6 +243,27 @@ are not relevance probabilities. This retrieval stage does not yet generate
 an LLM answer. Locations written only in the natural-language query are not
 automatically converted into a filter; pass the explicit argument when required.
 
+## Credentials and private files
+
+Local inference needs no model API key. Keep credentials, private keys, account
+files, and personal documents outside the repository and out of screenshots or
+shared logs. `.env`, common private-key formats, credential filenames, and local
+account directories are ignored. `.env.example` documents the non-secret local-only flag.
+
+The current checkout enables a repository-local pre-commit secret-pattern check.
+For a new clone, enable it with:
+
+```powershell
+git config --local core.hooksPath .githooks
+```
+
+Run `python scripts/check_secrets.py --staged` to inspect staged text before a
+commit, or omit `--staged` to inspect tracked working files. Reports show filenames
+and issue types, never matched values. This is a common-pattern check, not a full
+privacy audit; unfamiliar secret formats, images, and binary files need review.
+Ignore rules do not remove anything already committed. If a real credential is
+ever exposed, revoke/rotate it before addressing repository history.
+
 ## Grounded-answer interface
 
 `answers.py` defines a provider-independent generator protocol and system prompt.
@@ -204,6 +271,17 @@ The prompt requires evidence-based answers, explicit partial matches, and job-ID
 citations. The service rejects empty answers, unknown citations, or disagreement
 between inline citations and declared IDs. Empty retrieval skips generation.
 
-No hosted provider or local generative model is selected or connected yet. The
-CLI currently returns retrieval evidence, not a generated answer. Citation
-validation checks reference consistency; it does not prove factual grounding.
+The `ask` command connects this service to the downloaded
+`qwen3:4b-instruct-2507-q4_K_M` model through Ollama on `127.0.0.1:11434`.
+Start Ollama with `OLLAMA_NO_CLOUD=1` in its server environment. No API key is
+needed. The adapter rejects other hosts and models and disables proxies and
+redirects. There is no cloud fallback.
+
+`ask` defaults to two jobs and CPU retrieval/reranking to leave GPU memory for
+generation. `search` and `ingest` retain their CUDA default; `--device` overrides
+the selection. The adapter requests structured JSON, checks completion, and
+uses a conservative UTF-8 byte budget to leave room for output within its
+8,192-token context. Oversized evidence is rejected; reduce `--top-k` if needed.
+The model is unloaded after the response. Citation validation checks reference
+consistency; it does not prove factual grounding. Initial live checks showed
+requirement overstatements, so answer quality still needs systematic evaluation.

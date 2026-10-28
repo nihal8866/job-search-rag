@@ -1,0 +1,598 @@
+{
+  "recorded_at_utc": "2026-10-28T10:53:41.754203+00:00",
+  "cutoff": 5,
+  "device": "cuda",
+  "candidate_count": 20,
+  "rrf_k": 60,
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "reranker_model": "BAAI/bge-reranker-v2-m3",
+  "load_seconds": 19.8313464999992,
+  "query_sha256": "b5ea1f4e503165776345de33414796a636957fbec5ca4a0c233a46e4f8122747",
+  "chunks_sha256": "b3c97c700e467e32afb951b6a522ec6565da040b744ac656cad7c39b60f424ea",
+  "limitations": [
+    "Source-derived development queries; not held out or independently labeled.",
+    "Only target discovery is judged; other results can also be relevant.",
+    "One sequential run; timings reuse common stages and exclude model load and generation.",
+    "All methods have up to 20 chunks per retriever; unique-job counts can be below 5."
+  ],
+  "summary": {
+    "vector": {
+      "case_count": 8,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0,
+      "mean_seconds": 0.12238287499985745,
+      "median_seconds": 0.044726750000336324
+    },
+    "hybrid": {
+      "case_count": 8,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0,
+      "mean_seconds": 0.17278237499976967,
+      "median_seconds": 0.0793925500001933
+    },
+    "reranked": {
+      "case_count": 8,
+      "hit_at_1": 0.875,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 0.9375,
+      "mean_seconds": 6.475792849999834,
+      "median_seconds": 6.610860949998823
+    }
+  },
+  "results": [
+    {
+      "case_id": "K01",
+      "method": "vector",
+      "job_ids": [
+        "LF0001",
+        "LF0128",
+        "LF0134",
+        "LF0150",
+        "LF0029"
+      ],
+      "chunk_ids": [
+        "LF0001_chunk_001",
+        "LF0128_chunk_001",
+        "LF0134_chunk_000",
+        "LF0150_chunk_001",
+        "LF0029_chunk_002"
+      ],
+      "seconds": 0.6874138999992283,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K01",
+      "method": "hybrid",
+      "job_ids": [
+        "LF0001",
+        "LF0134",
+        "LF0150",
+        "LF0148",
+        "LF0338"
+      ],
+      "chunk_ids": [
+        "LF0001_chunk_000",
+        "LF0134_chunk_000",
+        "LF0150_chunk_001",
+        "LF0148_chunk_000",
+        "LF0338_chunk_000"
+      ],
+      "seconds": 0.81619259999934,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K01",
+      "method": "reranked",
+      "job_ids": [
+        "LF0001",
+        "LF0128",
+        "LF0134",
+        "LF0365",
+        "LF0672"
+      ],
+      "chunk_ids": [
+        "LF0001_chunk_000",
+        "LF0128_chunk_002",
+        "LF0134_chunk_000",
+        "LF0365_chunk_000",
+        "LF0672_chunk_000"
+      ],
+      "seconds": 6.9164734999976645,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K02",
+      "method": "vector",
+      "job_ids": [
+        "LF0204",
+        "LF0479",
+        "LF0688",
+        "LF0254",
+        "LF0211"
+      ],
+      "chunk_ids": [
+        "LF0204_chunk_000",
+        "LF0479_chunk_001",
+        "LF0688_chunk_001",
+        "LF0254_chunk_001",
+        "LF0211_chunk_001"
+      ],
+      "seconds": 0.03518909999911557,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K02",
+      "method": "hybrid",
+      "job_ids": [
+        "LF0204",
+        "LF0479",
+        "LF0828",
+        "LF0585",
+        "LF0688"
+      ],
+      "chunk_ids": [
+        "LF0204_chunk_000",
+        "LF0479_chunk_001",
+        "LF0828_chunk_000",
+        "LF0585_chunk_000",
+        "LF0688_chunk_001"
+      ],
+      "seconds": 0.0677953999984311,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K02",
+      "method": "reranked",
+      "job_ids": [
+        "LF0204",
+        "LF0319",
+        "LF0341",
+        "LF0224",
+        "LF0202"
+      ],
+      "chunk_ids": [
+        "LF0204_chunk_000",
+        "LF0319_chunk_002",
+        "LF0341_chunk_002",
+        "LF0224_chunk_000",
+        "LF0202_chunk_002"
+      ],
+      "seconds": 8.145159399999102,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K03",
+      "method": "vector",
+      "job_ids": [
+        "LF0335",
+        "LF0349",
+        "LF0493",
+        "LF0361",
+        "LF0442"
+      ],
+      "chunk_ids": [
+        "LF0335_chunk_000",
+        "LF0349_chunk_001",
+        "LF0493_chunk_002",
+        "LF0361_chunk_001",
+        "LF0442_chunk_001"
+      ],
+      "seconds": 0.046982899999420624,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K03",
+      "method": "hybrid",
+      "job_ids": [
+        "LF0335",
+        "LF0436",
+        "LF0345",
+        "LF0349",
+        "LF0445"
+      ],
+      "chunk_ids": [
+        "LF0335_chunk_000",
+        "LF0436_chunk_000",
+        "LF0345_chunk_000",
+        "LF0349_chunk_001",
+        "LF0445_chunk_002"
+      ],
+      "seconds": 0.07326689999899827,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K03",
+      "method": "reranked",
+      "job_ids": [
+        "LF0335",
+        "LF0432",
+        "LF0436",
+        "LF0493",
+        "LF0345"
+      ],
+      "chunk_ids": [
+        "LF0335_chunk_000",
+        "LF0432_chunk_000",
+        "LF0436_chunk_000",
+        "LF0493_chunk_001",
+        "LF0345_chunk_001"
+      ],
+      "seconds": 7.503841800000373,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K04",
+      "method": "vector",
+      "job_ids": [
+        "LF0499",
+        "LF0578",
+        "LF0579",
+        "LF0656",
+        "LF0542"
+      ],
+      "chunk_ids": [
+        "LF0499_chunk_000",
+        "LF0578_chunk_000",
+        "LF0579_chunk_001",
+        "LF0656_chunk_000",
+        "LF0542_chunk_001"
+      ],
+      "seconds": 0.042470600001252024,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K04",
+      "method": "hybrid",
+      "job_ids": [
+        "LF0499",
+        "LF0578",
+        "LF0607",
+        "LF0656",
+        "LF0647"
+      ],
+      "chunk_ids": [
+        "LF0499_chunk_000",
+        "LF0578_chunk_000",
+        "LF0607_chunk_000",
+        "LF0656_chunk_000",
+        "LF0647_chunk_001"
+      ],
+      "seconds": 0.058532600003673,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K04",
+      "method": "reranked",
+      "job_ids": [
+        "LF0499",
+        "LF0617",
+        "LF0530",
+        "LF0607",
+        "LF0578"
+      ],
+      "chunk_ids": [
+        "LF0499_chunk_000",
+        "LF0617_chunk_001",
+        "LF0530_chunk_001",
+        "LF0607_chunk_000",
+        "LF0578_chunk_001"
+      ],
+      "seconds": 5.627197100006015,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K05",
+      "method": "vector",
+      "job_ids": [
+        "LF0667",
+        "LF0773",
+        "LF0698",
+        "LF0669",
+        "LF0405"
+      ],
+      "chunk_ids": [
+        "LF0667_chunk_001",
+        "LF0773_chunk_001",
+        "LF0698_chunk_000",
+        "LF0669_chunk_000",
+        "LF0405_chunk_001"
+      ],
+      "seconds": 0.05659469999955036,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K05",
+      "method": "hybrid",
+      "job_ids": [
+        "LF0667",
+        "LF0759",
+        "LF0725",
+        "LF0405",
+        "LF0773"
+      ],
+      "chunk_ids": [
+        "LF0667_chunk_000",
+        "LF0759_chunk_000",
+        "LF0725_chunk_000",
+        "LF0405_chunk_000",
+        "LF0773_chunk_001"
+      ],
+      "seconds": 0.09137849999751779,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K05",
+      "method": "reranked",
+      "job_ids": [
+        "LF0667",
+        "LF0773",
+        "LF0675",
+        "LF0759",
+        "LF0748"
+      ],
+      "chunk_ids": [
+        "LF0667_chunk_002",
+        "LF0773_chunk_000",
+        "LF0675_chunk_001",
+        "LF0759_chunk_000",
+        "LF0748_chunk_000"
+      ],
+      "seconds": 6.146931199997198,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K06",
+      "method": "vector",
+      "job_ids": [
+        "LF0832",
+        "LF0949",
+        "LF0842",
+        "LF0895",
+        "LF0940"
+      ],
+      "chunk_ids": [
+        "LF0832_chunk_000",
+        "LF0949_chunk_000",
+        "LF0842_chunk_000",
+        "LF0895_chunk_001",
+        "LF0940_chunk_000"
+      ],
+      "seconds": 0.0504097000011825,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K06",
+      "method": "hybrid",
+      "job_ids": [
+        "LF0832",
+        "LF0842",
+        "LF0949",
+        "LF0940",
+        "LF0895"
+      ],
+      "chunk_ids": [
+        "LF0832_chunk_000",
+        "LF0842_chunk_000",
+        "LF0949_chunk_000",
+        "LF0940_chunk_000",
+        "LF0895_chunk_000"
+      ],
+      "seconds": 0.08551820000138832,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K06",
+      "method": "reranked",
+      "job_ids": [
+        "LF0949",
+        "LF0832",
+        "LF0842",
+        "LF0940",
+        "LF0934"
+      ],
+      "chunk_ids": [
+        "LF0949_chunk_000",
+        "LF0832_chunk_000",
+        "LF0842_chunk_000",
+        "LF0940_chunk_000",
+        "LF0934_chunk_001"
+      ],
+      "seconds": 4.245017900000676,
+      "target_rank_at_k": 2,
+      "hit_at_1": 0.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 0.5
+    },
+    {
+      "case_id": "K07",
+      "method": "vector",
+      "job_ids": [
+        "LF0265",
+        "LF0467",
+        "LF0144",
+        "LF0124",
+        "LF0288"
+      ],
+      "chunk_ids": [
+        "LF0265_chunk_000",
+        "LF0467_chunk_000",
+        "LF0144_chunk_001",
+        "LF0124_chunk_003",
+        "LF0288_chunk_001"
+      ],
+      "seconds": 0.026484900001378264,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K07",
+      "method": "hybrid",
+      "job_ids": [
+        "LF0265",
+        "LF0288",
+        "LF0022",
+        "LF0124",
+        "LF0144"
+      ],
+      "chunk_ids": [
+        "LF0265_chunk_000",
+        "LF0288_chunk_001",
+        "LF0022_chunk_001",
+        "LF0124_chunk_000",
+        "LF0144_chunk_001"
+      ],
+      "seconds": 0.1388604000021587,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K07",
+      "method": "reranked",
+      "job_ids": [
+        "LF0265",
+        "LF0288",
+        "LF0101",
+        "LF0124",
+        "LF0022"
+      ],
+      "chunk_ids": [
+        "LF0265_chunk_000",
+        "LF0288_chunk_001",
+        "LF0101_chunk_001",
+        "LF0124_chunk_003",
+        "LF0022_chunk_001"
+      ],
+      "seconds": 6.783074400002079,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K08",
+      "method": "vector",
+      "job_ids": [
+        "LF0003",
+        "LF0315",
+        "LF0016",
+        "LF0012",
+        "LF0049"
+      ],
+      "chunk_ids": [
+        "LF0003_chunk_001",
+        "LF0315_chunk_001",
+        "LF0016_chunk_001",
+        "LF0012_chunk_000",
+        "LF0049_chunk_000"
+      ],
+      "seconds": 0.03351719999773195,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K08",
+      "method": "hybrid",
+      "job_ids": [
+        "LF0003",
+        "LF0016",
+        "LF0266",
+        "LF0022",
+        "LF0315"
+      ],
+      "chunk_ids": [
+        "LF0003_chunk_000",
+        "LF0016_chunk_001",
+        "LF0266_chunk_000",
+        "LF0022_chunk_001",
+        "LF0315_chunk_001"
+      ],
+      "seconds": 0.05071439999665017,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    },
+    {
+      "case_id": "K08",
+      "method": "reranked",
+      "job_ids": [
+        "LF0003",
+        "LF0315",
+        "LF0049",
+        "LF0065",
+        "LF0105"
+      ],
+      "chunk_ids": [
+        "LF0003_chunk_000",
+        "LF0315_chunk_001",
+        "LF0049_chunk_001",
+        "LF0065_chunk_001",
+        "LF0105_chunk_000"
+      ],
+      "seconds": 6.438647499995568,
+      "target_rank_at_k": 1,
+      "hit_at_1": 1.0,
+      "hit_at_k": 1.0,
+      "reciprocal_rank_at_k": 1.0
+    }
+  ]
+}

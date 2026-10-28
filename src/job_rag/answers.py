@@ -1,4 +1,4 @@
-"""Provider-independent grounded-answer contract; no LLM provider is configured."""
+"""Grounded-answer prompt and retrieval/generation composition."""
 
 from dataclasses import dataclass
 import json
@@ -17,6 +17,18 @@ Do not invent skills, salaries, benefits, locations, links, or current availabil
 Distinguish explicit requirements from related experience and missing information.
 A retrieval score does not establish that a job meets every query requirement.
 Mention partial matches honestly; do not infer APIs or databases from a Python title.
+Do not infer backend development from application integration or Python alone.
+Preserve alternatives: "Java, Golang, or Python" does not mean Python is mandatory.
+Preserve "experience or general knowledge" rather than making experience mandatory.
+Preserve technical groupings: "databases and messaging frameworks" must not be
+collapsed into "databases" when summarizing a list of technologies.
+Write one short paragraph per job, at most two sentences each.
+In each paragraph state only explicit matches and then requirements not established.
+Attach that job's [JOB_ID] citation to its paragraph.
+Even when the answer is that salary or current availability is not established,
+include the inspected job's inline [JOB_ID] citation in text, not just in cited_job_ids.
+Do not add a collective comparison, overall conclusion, or repeat the requirements.
+If databases are explicitly named, report that support; do not also claim databases are missing.
 Answer concisely, and cite job-specific statements with [JOB_ID] references.
 Only use job IDs from the supplied sources. Return those same IDs in cited_job_ids.
 If evidence is insufficient, say what is not established by the retrieved excerpts.
@@ -30,7 +42,7 @@ class GeneratedAnswer:
 
 
 class AnswerGenerator(Protocol):
-    """A future hosted or local adapter must implement this method."""
+    """Contract implemented by the local Ollama adapter."""
 
     def generate(self, system_prompt: str, user_prompt: str) -> GeneratedAnswer:
         ...

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "purpose": "Source-derived known-item development checks, not exhaustive relevance judgments or a held-out benchmark.",
+  "label_origin": "Assistant-curated after inspecting cleaned source descriptions, before running this comparison. Independent human review pending.",
+  "cases": [
+    {"id": "K01", "query": "Quantitative analytics role doing market risk stress testing and model risk management", "target_job_id": "LF0001", "evidence": ["Performs end-to-end market risk stress testing", "Maintains and provides oversight of model development and model risk management"]},
+    {"id": "K02", "query": "C++/C# 工业自动化 PLC 上位机软件开发，熟悉 Modbus 和 EtherCAT", "target_job_id": "LF0204", "evidence": ["负责开发基于C++/C#", "ModbusEtherCAT", "PLC, HMI"]},
+    {"id": "K03", "query": "UX designer for e-commerce consumer experiences who creates and tests prototypes", "target_job_id": "LF0335", "evidence": ["Responsible for designing TikTok e-commerce consumer experience", "Create and test prototypes early in the design process"]},
+    {"id": "K04", "query": "Enterprise account executive selling telecommunications products through cold calling and client presentations", "target_job_id": "LF0499", "evidence": ["You connect clients with telecommunications products", "cold calling, discovery calls, appointment setting and client presentations"]},
+    {"id": "K05", "query": "Project manager in payments consulting with agile methods, client stakeholders and project risk analysis", "target_job_id": "LF0667", "evidence": ["Define scope, timelines, and budget and perform cost, benefit, and risk analyses", "Proficiency in agile methodologies and practices.", "Experience managing clients or internal stakeholders"]},
+    {"id": "K06", "query": "Campus marketing internship promoting student meal plans at orientation and promotional events", "target_job_id": "LF0832", "evidence": ["Marketing Intern - Meal Plan Ambassador", "Promote and assist with the sale of student meal plans", "Set up and work at promotional tables and events."]},
+    {"id": "K07", "query": "Senior Python developer building generative AI proof of concepts and helping transition them to production", "target_job_id": "LF0265", "evidence": ["Senior Python Developer (with GenAI)", "Support the transition of PoC projects to production phase", "High proficiency in Python is required"]},
+    {"id": "K08", "query": "Digital employee experience solutions architect using ServiceNow and generative agentic AI", "target_job_id": "LF0003", "evidence": ["Principal Digital Employee Experience Solutions Architect", "Generative and Agentic AI, ServiceNow", "Minimum five (5) years ServiceNow consulting experience"]}
+  ]
+}

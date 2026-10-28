@@ -28,6 +28,17 @@ class CliTests(unittest.TestCase):
         with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
             main(["search", "Python", "--location", "  "])
 
+    def test_ask_uses_cpu_retrieval_by_default_and_local_generator(self):
+        with patch("job_rag.pipeline.JobSearch") as pipeline, \
+                patch("job_rag.ollama_local.OllamaGenerator"), \
+                patch("job_rag.answers.GroundedAnswerService") as service:
+            service.return_value.answer.return_value = {"answer": "text", "jobs": [], "cited_job_ids": []}
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                status = main(["ask", "Python"])
+        self.assertEqual(status, 0)
+        self.assertEqual(pipeline.call_args.args[0].device, "cpu")
+        service.return_value.answer.assert_called_once_with("Python", top_k=2, location=None)
+
     def test_model_logs_do_not_corrupt_json_stdout(self):
         with patch("job_rag.pipeline.JobSearch") as factory:
             factory.return_value.search.side_effect = lambda *a, **kw: (print("model log"), sample_jobs())[1]

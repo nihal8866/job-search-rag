@@ -2,6 +2,26 @@
 .env
 .env.*
 !.env.example
+# Private keys, account credentials, and local model/account state
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_ed25519
+id_ecdsa
+credentials.json
+.netrc
+.npmrc
+.pypirc
+service-account*.json
+client_secret*.json
+.ssh/
+.aws/
+.ollama/
+secrets/
 .venv/
 venv/
 env/

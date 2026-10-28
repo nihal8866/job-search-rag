@@ -23,5 +23,10 @@ class Settings:
     chunk_overlap: int = 48
     embedding_batch_size: int = 16
     ingestion_batch_size: int = 500
+    llm_base_url: str = "http://127.0.0.1:11434"
+    llm_model: str = "qwen3:4b-instruct-2507-q4_K_M"
+    llm_context_length: int = 8192
+    llm_max_output_tokens: int = 512
+    llm_timeout_seconds: int = 300
     chunks_path: Path = PROJECT_ROOT / "data" / "processed" / "job_chunks.jsonl"
     database_path: Path = PROJECT_ROOT / "data" / "indexes" / "chroma"
