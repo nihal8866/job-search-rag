@@ -42,6 +42,16 @@
 
 ## Scope
 
+### Budget
+
+The project must have no paid API, subscription, or hosting dependency. Use local
+models and a local API server on existing hardware. There must be no automatic
+fallback to a billable cloud provider. Electricity and internet remain ordinary
+local operating costs rather than project service charges.
+
+The selected direction for answer generation is Ollama with a quantized local
+Qwen3 4B instruct model. Installation and real generation checks are pending.
+
 The assignment's title and requirements specify job-data RAG. An isolated sentence
 about diabetes classification appears unrelated and is treated as a copy-paste error.
 

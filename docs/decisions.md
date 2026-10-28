@@ -77,6 +77,21 @@ remote-work eligibility.
 
 ## Package, ingestion, and answer interface
 
+### Zero-service-cost requirement
+
+The user requires no paid API, subscription, or hosting costs. Answer generation
+will run locally through Ollama, initially using
+qwen3:4b-instruct-2507-q4_K_M (approximately 2.5 GB download). No cloud fallback
+will be added. Ollama's cloud features should be disabled in the server environment.
+The local model and adapter have not been installed or verified yet.
+
+The 8 GB GPU is also used by retrieval models. Initial integration can place
+retrieval/reranking on CPU to reserve GPU memory for generation; benchmark actual
+latency and memory before enabling simultaneous GPU residency for every model.
+
+References: https://ollama.com/library/qwen3:4b-instruct-2507-q4_K_M and
+https://docs.ollama.com/faq#how-do-i-disable-ollamas-cloud-features
+
 The editable package exposes CLI entry points while keeping notebook experiments
 available for explanation. Runtime dependencies match the direct requirements;
 notebook/build tools are development dependencies. JSON search output separates
