@@ -12,8 +12,9 @@ Work in small steps: explain the purpose, implement or run a small piece, inspec
 - [x] Audit missing values, duplicates, field types, and description lengths.
 - [x] Clean HTML while preserving original descriptions and job metadata.
 - [x] Export cleaned jobs to JSONL and verify reloaded values after normalizing missing values for comparison.
-- [ ] Chunk descriptions while preserving job metadata.
-- [ ] Generate embeddings.
+- [x] Chunk descriptions while preserving job metadata.
+- [x] Generate embeddings and validate numerical values and reload consistency.
+- [ ] Save and verify the final chunking notebook with current cells and outputs in execution order.
 - [ ] Store embeddings in a vector database.
 - [ ] Implement configurable top-N vector retrieval.
 - [ ] Implement BM25 keyword retrieval and rank fusion (hybrid search).

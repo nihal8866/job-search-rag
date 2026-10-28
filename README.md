@@ -4,7 +4,7 @@ A learning project to build a retrieval-augmented job search API from the suppli
 
 ## Status
 
-Dataset exploration and initial HTML cleaning are complete in `notebooks/01_data_exploration.ipynb`. The pipeline and API are not implemented yet.
+Dataset exploration and initial HTML cleaning are complete in `notebooks/01_data_exploration.ipynb`. Chunking and GPU embedding generation have produced 3,618 vectors of 384 dimensions; the latest second notebook still needs a save and reproducibility review. The vector database, retrieval pipeline, and API are not implemented yet.
 
 ## Planned pipeline
 
@@ -17,7 +17,7 @@ Dataset exploration and initial HTML cleaning are complete in `notebooks/01_data
 7. Generate a grounded LLM response using the retrieved jobs.
 8. Expose the pipeline through `POST /api/query` using FastAPI.
 
-Models, libraries, chunk sizes, and retrieval settings will be selected and documented during implementation.
+The initial embedding model is `intfloat/multilingual-e5-small`. Description windows target 384 tokens with 48-token overlap. Embedding inputs include job context and the `passage: ` prefix; full locations remain separate metadata. Retrieval settings and the remaining models will be selected during implementation.
 
 ## Project layout
 
@@ -41,6 +41,7 @@ The exploration environment uses Python 3.10.11. From the project root in PowerS
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+python -m pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128
 python -m pip install -r requirements.txt
 python -m pip check
 ```
@@ -48,6 +49,8 @@ python -m pip check
 `requirements.txt` records the current Windows development environment, including notebook tools. Installation from this snapshot in a fresh environment has not yet been verified.
 
 Open `notebooks/01_data_exploration.ipynb` in VS Code with the Python and Jupyter extensions, select the project `.venv` kernel, and run cells in order. The notebook reads the raw workbook and regenerates `data/processed/jobs_cleaned.jsonl`, which is intentionally ignored by Git. It preserves the original HTML and date strings alongside cleaned descriptions.
+
+Next run `notebooks/02_chunking_and_embeddings.ipynb` in order after saving the current working version. GPU encoding currently uses `device="cuda"` and requires a supported NVIDIA GPU and driver. It generates normalized embeddings in `data/processed/job_embeddings.npy` and matching chunk records in `data/processed/job_chunks.jsonl`. All three processed files are ignored by Git. Preserve row alignment between the vector array and chunk records. Public model downloads need internet access on first use; model files are cached locally.
 
 Copy `.env.example` to `.env` when configuring model providers. Keep credentials in `.env`, which Git ignores.
 
