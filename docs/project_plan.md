@@ -1,46 +1,52 @@
-# Project plan
+# Completion Checklist
 
-## Working approach
+## Implemented
 
-Work in small steps: explain the purpose, implement or run a small piece, inspect the output, and confirm understanding before advancing. Record engineering decisions as they are made.
+- [x] Repository structure and GitHub connection.
+- [x] Data audit: missing values, duplicates, types, coverage, and dates.
+- [x] HTML cleaning with original-data preservation and JSONL export.
+- [x] Multilingual token analysis and overlapping chunks with source metadata.
+- [x] GPU embeddings with shape, finite-value, and normalization checks.
+- [x] Reload verification of values, missingness, and row alignment.
+- [x] Persistent Chroma storage and vector-search baseline.
+- [x] BM25 retrieval and Reciprocal Rank Fusion.
+- [x] Multilingual cross-encoder reranking with pair-length checks.
+- [x] Distinct-job presentation and exploratory evidence inspection.
 
-## Requirements checklist
+## Review and reproducibility
 
-- [x] Read the assignment and inspect the supplied dataset.
-- [x] Create the project structure and documentation scaffold.
-- [x] Initialize Git and connect the GitHub remote.
-- [x] Audit missing values, duplicates, field types, and description lengths.
-- [x] Clean HTML while preserving original descriptions and job metadata.
-- [x] Export cleaned jobs to JSONL and verify reloaded values after normalizing missing values for comparison.
-- [x] Chunk descriptions while preserving job metadata.
-- [x] Generate embeddings and validate numerical values and reload consistency.
-- [ ] Save and verify the final chunking notebook with current cells and outputs in execution order.
-- [x] Store embeddings in a persistent cosine-distance Chroma collection.
-- [x] Demonstrate top-N vector retrieval in a notebook.
-- [x] Implement BM25 keyword retrieval and rank fusion in a notebook.
-- [x] Add a multilingual cross-encoder reranker in a notebook.
-- [x] Present distinct jobs using the best retrieved chunk per job.
-- [ ] Verify notebooks 03 and 04 from fresh kernels after separating their cells.
-- [ ] Move the notebook pipeline into reusable Python modules with configurable retrieval settings.
-- [ ] Implement explicit location-filter handling.
-- [ ] Integrate an LLM with a grounded, concise prompt.
-- [ ] Implement FastAPI `POST /api/query`.
-- [ ] Test retrieval quality, grounding, and endpoint behavior.
-- [ ] Compare vector-only, hybrid, and reranked retrieval.
-- [ ] Document reproducible setup and real request/response examples.
-- [ ] Finish architecture, decisions, assumptions, limitations, and future work.
-- [ ] Transfer the final report to Google Docs.
-- [ ] Run final verification and confirm reviewer access to GitHub.
+- [x] Separate notebook responsibilities and remove temporary diagnostic cells.
+- [x] Organize direct dependencies, notebook tools, and the environment snapshot.
+- [x] Execute all four revised notebooks from fresh kernels.
+- [ ] Verify installation in a newly created environment.
 
-## Milestones
+## Remaining implementation
 
-1. Repository and documentation setup.
-2. Data inspection and preprocessing.
-3. Vector retrieval baseline.
-4. Hybrid retrieval and reranking.
-5. LLM integration and API.
-6. Evaluation, report, and submission.
+- [ ] Move notebook logic into reusable Python modules.
+- [ ] Add configurable retrieval settings and explicit location handling.
+- [ ] Integrate an LLM with grounded responses and source references.
+- [ ] Implement FastAPI POST /api/query with validation and error handling.
+- [ ] Evaluate vector-only, hybrid, and reranked retrieval on labeled queries.
+- [ ] Check latency, grounding, no-match behavior, and pipeline/API failures.
+- [ ] Add verified setup and API request/response examples.
+- [ ] Complete the report, limitations, and future enhancements.
+- [ ] Prepare the Google Docs report and verify reviewer access.
+- [ ] Verify the complete codebase and submit the GitHub repository link.
 
-## Scope note
+## Scope
 
-The assignment includes an isolated sentence about diabetes classification in its dataset description. Its title and implementation requirements specify job retrieval with RAG. Treat the diabetes sentence as an apparent copy-paste error.
+The assignment's title and requirements specify job-data RAG. An isolated sentence
+about diabetes classification appears unrelated and is treated as a copy-paste error.
+
+## Verification record - October 28, 2026
+
+All four revised notebooks completed in separate fresh kernels using the existing
+project environment and cached models. The run regenerated cleaned data, chunks,
+and GPU embeddings; verified artifact reloads and Chroma storage; and completed
+BM25, fusion, and reranking. Chroma contained 3,618 records, the embedding array
+was (3618, 384), and the example query produced 34 fused candidates.
+
+`pip check` passed. Direct dependency pins match the installed environment, and
+the requirements files passed an installed-environment dry run. Notebook schemas,
+Python syntax, and documentation file links were checked. A fresh installation
+into a new environment and broader relevance evaluation remain pending.

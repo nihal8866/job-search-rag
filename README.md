@@ -1,70 +1,105 @@
 # Job Search RAG
 
-A learning project to build a retrieval-augmented job search API from the supplied LF Jobs dataset.
+Job retrieval over the LF Jobs dataset using multilingual embeddings, BM25,
+Reciprocal Rank Fusion (RRF), and cross-encoder reranking.
 
-## Status
+The current implementation runs in notebooks. Reusable pipeline modules, LLM
+answer generation, the FastAPI endpoint, and broader evaluation remain pending.
 
-Dataset exploration, HTML cleaning, chunking, and GPU embeddings are implemented in notebooks 01 and 02. Notebook 03 stores 3,618 vectors in Chroma and demonstrates vector search. Notebook 04 implements BM25, Reciprocal Rank Fusion, multilingual cross-encoder reranking, and distinct-job results. The separated notebooks need fresh-kernel verification. Reusable pipeline modules, LLM integration, API, and broader evaluation remain pending.
-
-## Planned pipeline
-
-1. Read the Excel dataset and audit missing values, duplicates, and metadata.
-2. Clean HTML job descriptions and create chunks with job identifiers and metadata.
-3. Generate embeddings and store them in a vector database.
-4. Retrieve candidates with vector similarity and BM25 keyword search.
-5. Merge candidate rankings using Reciprocal Rank Fusion.
-6. Rerank candidates with a cross-encoder and consolidate results by job.
-7. Generate a grounded LLM response using the retrieved jobs.
-8. Expose the pipeline through `POST /api/query` using FastAPI.
-
-The initial embedding model is `intfloat/multilingual-e5-small`. Description windows target 384 tokens with 48-token overlap. Embedding inputs include job context and the `passage: ` prefix; full locations remain separate metadata. Retrieval settings and the remaining models will be selected during implementation.
-
-## Project layout
+## Pipeline
 
 ```text
-data/raw/          Original Excel dataset
-docs/              Assignment, plan, decision log, and report draft
-notebooks/         Step-by-step exploration and experiments
-src/job_rag/       Reusable pipeline and API code
-scripts/           Data ingestion and other entry points
-tests/             Pipeline and API verification
+Excel -> HTML cleaning -> overlapping chunks -> embeddings -> Chroma
+Query -> vector search + BM25 -> RRF -> cross-encoder -> distinct jobs
 ```
 
-## Dataset
-
-`data/raw/LF Jobs.xlsx` contains 1,000 job listings, 145 companies, seven categories, and nine columns. Job descriptions contain HTML. The dataset is supplied with the assignment; no redistribution license has been established.
+| Component | Current configuration |
+| --- | --- |
+| Dataset | 1,000 jobs, 145 companies, 7 categories |
+| Embedding model | intfloat/multilingual-e5-small; 384 dimensions |
+| Chunks | 384-token windows with 48-token overlap |
+| Vector store | Local Chroma with cosine distance |
+| Keyword retrieval | rank_bm25.BM25Okapi |
+| Fusion | Up to 20 chunks per retriever; RRF k=60 |
+| Reranker | BAAI/bge-reranker-v2-m3; batches of 4 |
+| Job presentation | Best-scoring retrieved chunk per job |
 
 ## Setup
 
-The exploration environment uses Python 3.10.11. From the project root in PowerShell:
+Development environment: Windows, Python 3.10.11, NVIDIA RTX 4060 Laptop GPU
+with 8 GB VRAM. Model-loading cells currently use `device="cuda"`.
+
+From the project root in PowerShell:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 python -m pip check
 ```
 
-`requirements.txt` records the current Windows development environment, including notebook tools. Installation from this snapshot in a fresh environment has not yet been verified.
+- `requirements.txt`: pinned direct data and retrieval dependencies.
+- `requirements-dev.txt`: direct dependencies plus notebook tools.
+- `requirements-lock.txt`: the full Windows environment snapshot, including
+  transitive dependencies. Install this file instead for the recorded environment.
 
-Open `notebooks/01_data_exploration.ipynb` in VS Code with the Python and Jupyter extensions, select the project `.venv` kernel, and run cells in order. The notebook reads the raw workbook and regenerates `data/processed/jobs_cleaned.jsonl`, which is intentionally ignored by Git. It preserves the original HTML and date strings alongside cleaned descriptions.
+Dependency files include the PyTorch CUDA 12.8 wheel source. Installation in a
+new environment remains a final submission check. Hugging Face model files
+download on first use and are cached locally. The current retrieval notebooks
+do not require an LLM API key.
 
-Next run `notebooks/02_chunking_and_embeddings.ipynb` in order. GPU encoding currently uses `device="cuda"` and requires a supported NVIDIA GPU and driver. It generates normalized embeddings in `data/processed/job_embeddings.npy` and matching chunk records in `data/processed/job_chunks.jsonl`. All three processed files are ignored by Git. Preserve row alignment between the vector array and chunk records. Public model downloads need internet access on first use; model files are cached locally.
+## Notebook order
 
-Then run `notebooks/03_vector_search.ipynb` to populate the persistent cosine-distance Chroma collection under `data/indexes/chroma`. Notebook `04_hybrid_search.ipynb` loads the saved chunks and reopens that collection independently, builds BM25 in memory, fuses up to 20 candidates per retriever with RRF (k=60), and reranks candidates using `BAAI/bge-reranker-v2-m3`. Reranking uses batches of four and a checked 512-token pair limit. Run each notebook from top to bottom in its own `.venv` kernel; variables are not shared. Database files are ignored by Git and regenerated by notebook 03.
+In VS Code, select the project `.venv` kernel and run each notebook in order.
 
-The notebooks currently show a single exploratory query. The reranked first result supports Python but does not explicitly establish all requested API/database skills. Neither fusion nor reranking has yet demonstrated a measured quality improvement. Location metadata is preserved and included in BM25, but strict location filtering is not implemented.
+| Notebook | Purpose | Generated output |
+| --- | --- | --- |
+| [01 Data exploration](notebooks/01_data_exploration.ipynb) | Audit the workbook and clean HTML | jobs_cleaned.jsonl |
+| [02 Chunking and embeddings](notebooks/02_chunking_and_embeddings.ipynb) | Create and verify chunks and vectors | job_chunks.jsonl, job_embeddings.npy |
+| [03 Vector search](notebooks/03_vector_search.ipynb) | Populate Chroma and inspect the vector baseline | data/indexes/chroma/ |
+| [04 Hybrid search](notebooks/04_hybrid_search.ipynb) | Build BM25, fuse rankings, rerank, and inspect evidence | Ranked chunk and job tables |
 
-Copy `.env.example` to `.env` when configuring model providers. Keep credentials in `.env`, which Git ignores.
+Processed files are written to `data/processed/`. They and the generated database
+are ignored by Git and recreated in notebook order. Vector rows and chunk rows
+must stay aligned. Each notebook loads its own inputs.
 
-## Documentation
+## Verification
 
-- [Project plan](docs/project_plan.md): requirements and milestones.
-- [Decision log](docs/decisions.md): choices, reasoning, and alternatives.
-- [Report draft](docs/report.md): architecture, usage, evaluation, assumptions, and limitations. Transfer the completed report to Google Docs as requested by the assignment.
-- [Assignment PDF](docs/GenAI_Takeaway_Assignment.pdf).
+On October 28, 2026, all four notebooks completed in separate fresh kernels using
+the project environment and cached model files. Dependency compatibility and
+requirements-file checks passed. This verifies the current notebook workflow,
+not a fresh environment installation or overall retrieval quality.
 
-## Evaluation plan
+## Results and limitations
 
-Compare vector-only search, hybrid search, and hybrid search with reranking on the same labeled queries. Check retrieval relevance, job deduplication, grounded responses, and latency. Metrics and results are pending.
+Preparation produces 3,618 chunks covering all jobs. Complete embedding inputs
+have a maximum of 438 tokens, within the 512-token limit. Validation checks cover
+unique IDs, job coverage, finite vectors, normalization, and artifact reloads.
+
+The example query "Python backend developer working with APIs and databases"
+produces 34 hybrid candidates. RRF ranks LF0247 first; reranking places LF0265
+first. LF0265's inspected chunk explicitly supports Python but does not establish
+API or database work. This is a functional example, not a measured quality gain.
+
+- Historical publication dates do not establish whether a listing remains open.
+- Full locations are metadata and BM25 text; strict location filtering is pending.
+- Keyword tokenization has a basic CJK fallback without translation or stemming.
+- Token windows can split sentences and retain company boilerplate.
+- Ranking by a single chunk can miss requirements elsewhere in a job description.
+- Labeled retrieval evaluation, latency measurements, LLM grounding, and API checks remain pending.
+
+## Layout and documentation
+
+```text
+data/raw/       Supplied workbook
+docs/           Assignment, decision notes, report draft, and checklist
+notebooks/      Data preparation and retrieval experiments
+src/job_rag/    Package scaffold for reusable code
+scripts/        Reserved for pipeline entry points
+tests/          Reserved for pipeline and API checks
+```
+
+See [engineering decisions](docs/decisions.md), the [report draft](docs/report.md),
+the [completion checklist](docs/project_plan.md), and the
+[assignment](docs/GenAI_Takeaway_Assignment.pdf). Final delivery also requires
+the complete API, evaluation, and a Google Docs report.
