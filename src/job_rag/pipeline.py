@@ -1,4 +1,4 @@
-"""Compose hybrid candidate retrieval and reranking into job search."""
+"""Combine hybrid search, reranking, and job-level results."""
 
 import pandas as pd
 
@@ -8,7 +8,7 @@ from job_rag.search import HybridRetriever
 
 
 class JobSearch:
-    """Load retrieval resources once and return distinct jobs with evidence."""
+    """Load the search models once and reuse them across queries."""
 
     def __init__(self, settings: Settings):
         if settings.top_k < 1:

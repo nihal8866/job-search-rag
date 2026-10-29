@@ -1,4 +1,4 @@
-"""Run sequential checks against an already-running local API; no server changes."""
+"""Run saved test cases against the local API, one request at a time."""
 
 import argparse
 from datetime import datetime, timezone

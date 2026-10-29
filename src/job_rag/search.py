@@ -9,7 +9,7 @@ from job_rag.retrieval import reciprocal_rank_fusion
 
 
 class HybridRetriever:
-    """Reuse loaded resources across queries and return ranked candidate chunks."""
+    """Load the index and embedding model once for hybrid searches."""
 
     def __init__(self, settings: Settings):
         if settings.candidate_count < 1:
@@ -25,7 +25,7 @@ class HybridRetriever:
         )
 
     def search(self, query: str, location: str | None = None) -> pd.DataFrame:
-        """Retrieve fused chunks; job deduplication belongs after reranking."""
+        """Return fused chunk candidates; deduplicate jobs after reranking."""
         if not query.strip():
             raise ValueError("The query must contain non-whitespace text.")
 

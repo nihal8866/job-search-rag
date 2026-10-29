@@ -1,4 +1,4 @@
-"""Constrain local generation to selecting source lines, then render citations."""
+"""Turn model-selected source lines into quoted answers."""
 
 import json
 import re
@@ -7,7 +7,7 @@ from job_rag.answers import GeneratedAnswer
 
 
 def selection_request(user_prompt: str) -> tuple[str, dict, dict[str, list[str]]]:
-    """Build a per-source schema; the model cannot supply answer prose or IDs."""
+    """Number each source line and limit the model to those choices."""
     context = json.loads(user_prompt)
     sources = context["sources"]
     units = {}
@@ -40,7 +40,7 @@ def selection_request(user_prompt: str) -> tuple[str, dict, dict[str, list[str]]
 
 
 def render_selection(selected: object, units: dict[str, list[str]]) -> GeneratedAnswer:
-    """Reject invalid selections and quote only the supplied source text."""
+    """Check line numbers, then copy the source text and add citations."""
     if not isinstance(selected, dict) or set(selected) != set(units):
         raise RuntimeError("The local selection does not match the required schema.")
     paragraphs = []
@@ -51,7 +51,7 @@ def render_selection(selected: object, units: dict[str, list[str]]) -> Generated
                 or len(set(numbers)) != len(numbers)):
             raise RuntimeError("The local selection contains invalid source-line references.")
         if numbers:
-            # Preserve source order, even when the model returns a different order.
+            # Show selected lines in their original order.
             quotes = "\n".join("> " + line for i in sorted(numbers) for line in lines[i].splitlines())
             paragraphs.append(f"Selected evidence [{job_id}]:\n{quotes}")
         else:

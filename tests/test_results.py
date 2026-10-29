@@ -1,4 +1,4 @@
-"""Output serialization must not leak NaN values into JSON."""
+"""Check JSON output, including missing metadata and scores."""
 
 import json
 import unittest

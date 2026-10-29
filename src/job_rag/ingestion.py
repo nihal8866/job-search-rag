@@ -1,4 +1,4 @@
-"""Rebuild cleaned jobs, contextual chunks, embeddings, and a Chroma index."""
+"""Prepare jobs, create embeddings, and build the Chroma index."""
 
 from pathlib import Path
 
@@ -23,7 +23,7 @@ def clean_description(html: str) -> str:
 
 
 def prepare_jobs(dataset_path: Path) -> pd.DataFrame:
-    """Audit required fields and preserve source values beside cleaned text."""
+    """Check required fields and add cleaned text without replacing the source."""
     if not dataset_path.is_file():
         raise FileNotFoundError(f"Dataset not found: {dataset_path}")
     jobs = pd.read_excel(dataset_path)
@@ -53,7 +53,7 @@ def prepare_jobs(dataset_path: Path) -> pd.DataFrame:
 
 
 def chunk_jobs(jobs: pd.DataFrame, tokenizer, settings: Settings, max_length: int) -> pd.DataFrame:
-    """Use the notebook's token windows and contextual input format."""
+    """Use the same chunk settings and metadata header as notebook 02."""
     if not 0 <= settings.chunk_overlap < settings.chunk_size:
         raise ValueError("Require 0 <= chunk overlap < chunk size.")
     step = settings.chunk_size - settings.chunk_overlap
@@ -107,7 +107,7 @@ def chunk_jobs(jobs: pd.DataFrame, tokenizer, settings: Settings, max_length: in
 
 
 def ingest_dataset(dataset_path: Path, settings: Settings) -> dict[str, object]:
-    """Prepare and persist artifacts; reject stale IDs rather than mixing corpora."""
+    """Save processed data and vectors after checking the collection IDs."""
     if settings.embedding_batch_size < 1 or settings.ingestion_batch_size < 1:
         raise ValueError("Embedding and ingestion batch sizes must be positive.")
     jobs = prepare_jobs(dataset_path)

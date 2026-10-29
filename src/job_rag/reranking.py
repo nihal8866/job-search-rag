@@ -8,7 +8,7 @@ from job_rag.config import Settings
 
 
 class CrossEncoderReranker:
-    """Reuse one loaded model and reject pairs that would be truncated."""
+    """Load the reranker once and check pair lengths before scoring."""
 
     def __init__(self, settings: Settings):
         if settings.reranker_batch_size < 1 or settings.reranker_max_length < 1:
@@ -21,7 +21,7 @@ class CrossEncoderReranker:
         )
 
     def rerank(self, query: str, candidates: pd.DataFrame) -> pd.DataFrame:
-        """Return scored chunks in descending relevance order, retaining metadata."""
+        """Sort candidate chunks by reranker score and keep their metadata."""
         if not query.strip():
             raise ValueError("The query must contain non-whitespace text.")
 

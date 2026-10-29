@@ -1,4 +1,4 @@
-"""Load the persisted vector collection and its matching keyword corpus."""
+"""Load saved chunks, the Chroma collection, and the BM25 index."""
 
 import chromadb
 import numpy as np
@@ -21,7 +21,7 @@ KEYWORD_COLUMNS = [
 
 
 class RetrievalIndex:
-    """Keep keyword scores and vector-store records linked by chunk ID."""
+    """Use the same chunk IDs for keyword and vector search."""
 
     def __init__(self, settings: Settings):
         self.settings = settings

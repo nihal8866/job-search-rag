@@ -1,4 +1,4 @@
-"""Provider-independent checks; fake outputs are not live LLM validation."""
+"""Test answer validation with a fake generator."""
 
 import json
 import unittest

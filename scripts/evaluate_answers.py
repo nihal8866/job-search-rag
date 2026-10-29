@@ -15,7 +15,7 @@ from job_rag.ollama_local import OllamaGenerator
 
 
 class FixedEvidence:
-    """Control retrieval context; this experiment measures generation only."""
+    """Use fixed source chunks to test the answer step."""
 
     def __init__(self, chunks):
         self.chunks = chunks
@@ -25,7 +25,7 @@ class FixedEvidence:
 
 
 class RecordingGenerator:
-    """Retain model output for review even if citation validation rejects it."""
+    """Keep rejected output so citation failures can be inspected."""
 
     def __init__(self, generator):
         self.generator = generator

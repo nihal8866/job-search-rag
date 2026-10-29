@@ -1,4 +1,4 @@
-"""Structured answer generation through loopback-only Ollama HTTP calls."""
+"""Select evidence through the local Ollama server."""
 
 import json
 from urllib.error import HTTPError, URLError
@@ -17,7 +17,7 @@ class NoRedirects(HTTPRedirectHandler):
 
 
 class OllamaGenerator:
-    """Use the downloaded local model without credentials or a cloud fallback."""
+    """Call the downloaded Qwen model on this computer."""
 
     def __init__(self, settings: Settings):
         parsed = urlsplit(settings.llm_base_url)
@@ -33,7 +33,7 @@ class OllamaGenerator:
             raise ValueError("The LLM context must leave space for the input and output.")
         self.settings = settings
         self.endpoint = settings.llm_base_url.rstrip("/") + "/api/chat"
-        # Do not route local evidence through environment proxies or HTTP redirects.
+        # Keep source text on the local connection.
         self.opener = build_opener(ProxyHandler({}), NoRedirects())
 
     def generate(self, system_prompt: str, user_prompt: str) -> GeneratedAnswer:
@@ -42,8 +42,7 @@ class OllamaGenerator:
             system_prompt + "\nReturn one JSON object with this schema:\n"
             + json.dumps(schema)
         )
-        # A conservative byte budget for this byte-tokenized model avoids silently
-        # losing source text. It reserves output tokens and chat-template overhead.
+        # Use a conservative byte budget, leaving room for output and chat formatting.
         input_bytes = len((system + user_prompt).encode("utf-8"))
         budget = self.settings.llm_context_length - self.settings.llm_max_output_tokens - 128
         if input_bytes > budget:

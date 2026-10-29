@@ -1,4 +1,4 @@
-"""Separate HTTP/source-fidelity checks from exploratory relevance observations."""
+"""Check API responses and record relevance observations separately."""
 
 import re
 

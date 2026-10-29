@@ -48,7 +48,7 @@ class QueryResponse(BaseModel):
 
 
 def build_service():
-    # Load shared retrieval models once, reserving GPU memory for local Ollama.
+    # Keep retrieval on CPU so Ollama has room on the GPU.
     from job_rag.answers import GroundedAnswerService
     from job_rag.ollama_local import OllamaGenerator
     from job_rag.pipeline import JobSearch
@@ -74,12 +74,12 @@ def create_app(service_factory: Callable = build_service) -> FastAPI:
 
     @app.get("/health")
     def health():
-        # Readiness means retrieval loaded; generation is checked when queried.
+        # This checks retrieval startup; Ollama is checked on a query.
         return {"status": "ready", "generation": "local Ollama; checked on query"}
 
     @app.post("/api/query", response_model=QueryResponse)
     def query_jobs(body: QueryRequest):
-        # Reject overlapping inference rather than multiply model memory usage.
+        # Run one query at a time on this machine.
         lock = app.state.inference_lock
         if not lock.acquire(blocking=False):
             raise HTTPException(503, "The local pipeline is busy. Retry shortly.",
@@ -102,7 +102,7 @@ def create_app(service_factory: Callable = build_service) -> FastAPI:
                 503, "The local answer pipeline could not complete. Check Ollama and local model files.",
             ) from None
         except Exception:
-            # Do not expose exceptions, local paths, or source text in error bodies.
+            # Keep internal details out of the HTTP response.
             raise HTTPException(500, "The local pipeline encountered an unexpected error.") from None
         finally:
             lock.release()

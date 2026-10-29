@@ -1,4 +1,4 @@
-"""Compare known-target discovery using the same saved corpus and candidates."""
+"""Compare vector, hybrid, and reranked search on known target jobs."""
 
 import argparse
 from dataclasses import replace

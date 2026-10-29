@@ -25,7 +25,7 @@ PRIVATE_SUFFIXES = {".pem", ".key", ".p12", ".pfx", ".jks", ".keystore"}
 
 
 def detect_secrets(path: str, data: bytes) -> list[str]:
-    """Return issue labels only; callers must never print matched content."""
+    """Report issue types without exposing matched values."""
     file = Path(path)
     name = file.name.casefold()
     issues = []

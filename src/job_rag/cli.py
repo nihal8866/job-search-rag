@@ -1,4 +1,4 @@
-"""Command-line access to ingestion and reranked job search."""
+"""Commands for preparing data, searching jobs, and answering questions."""
 
 import argparse
 from contextlib import redirect_stdout
@@ -56,7 +56,7 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     try:
-        # Keep model/progress messages off stdout so stdout remains valid JSON.
+        # Send model logs to stderr so stdout stays valid JSON.
         with redirect_stdout(sys.stderr):
             if args.command in {"search", "ask"}:
                 from job_rag.pipeline import JobSearch

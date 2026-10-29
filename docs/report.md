@@ -1,155 +1,164 @@
-# Job Search RAG - Technical Report (Draft)
+# Job Search RAG — Technical report
 
-Status: working draft with data preparation, embeddings, reusable retrieval modules, local LLM generation, a local FastAPI interface, and exploratory results. Broader evaluation and final reproducibility details remain pending. A Google Docs version is required for final submission.
+Draft for submission. Technical checks are recorded below; independent relevance
+review, the Google Docs version, and reviewer-access checks are still pending.
 
-## 1. Problem and dataset
+## 1. Problem and data
 
-Build an API that retrieves relevant job listings and produces concise answers grounded in the supplied dataset. The workbook has 1,000 listings and nine columns, including HTML job descriptions and structured metadata.
+The goal is to search the supplied job listings and answer questions using their
+source evidence. The input is data/raw/LF Jobs.xlsx: 1,000 listings, nine columns,
+145 companies, and seven job categories. Descriptions contain HTML.
 
-## 2. Architecture
+There are nine missing locations, 880 missing tag values, and no repeated job IDs
+or fully duplicated rows. All descriptions remain nonempty after cleaning. All
+publication dates parse as UTC and range from February 1, 2023 to August 1, 2025.
+These dates do not confirm whether a vacancy is still open. Eleven descriptions
+contain characters in the checked CJK range; this is a character check, not full
+language detection.
 
-Implemented ingestion: Excel -> audit -> HTML cleaning -> metadata-preserving chunks -> embeddings -> vector database and keyword index.
+## 2. Data preparation and search
 
-Retrieval path: query -> vector and BM25 retrieval -> Reciprocal Rank Fusion -> cross-encoder reranking -> distinct jobs -> LLM response.
+BeautifulSoup removes HTML while the original description and date strings are
+retained. Descriptions are split into 384-token windows with 48-token overlap.
+This produces 3,618 chunks covering all jobs.
 
-### Implemented data preparation and embedding stage
+The embedding model is intfloat/multilingual-e5-small. Each input contains the
+passage prefix, job title, company, category, level, and chunk text. Including long
+location lists initially pushed 35 inputs over 512 tokens. Location is kept as
+metadata instead; the final complete input has a maximum of 438 tokens.
 
-BeautifulSoup extracts plain text while retaining original HTML. All 1,000 cleaned descriptions are non-empty. Eleven descriptions contain characters in the checked CJK range; this is not full language detection. The initial model is intfloat/multilingual-e5-small, with multilingual support and a 512-token input limit (https://huggingface.co/intfloat/multilingual-e5-small).
+GPU encoding produces normalized vectors with shape (3618, 384). Checks cover
+finite values, unit norms, unique chunk IDs, job coverage, and saved-file alignment.
+Reload checks compare both values and missing-value positions.
 
-Token windows target 384 description tokens with 48-token overlap. The resulting 3,618 chunks retain job metadata and identifiers. Embedding text includes the passage prefix, title, company, category, level, and chunk text. Long location lists initially caused 35 oversized inputs. Excluding locations from embedding text, while retaining them in metadata, reduced the maximum full input to 438 tokens. The reusable pipeline now applies an explicit location-text filter before retrieval.
+Chroma stores the vectors, source text, and metadata using cosine distance. BM25
+indexes metadata and chunk text, including full locations. The shared keyword
+tokenizer normalizes case, preserves C++/C#, and separates common CJK/kana characters.
+It does not translate, stem words, or perform linguistic CJK word segmentation.
 
-GPU encoding produced a normalized array of shape (3618, 384). Validation checks passed for finite values, unit norms, and saved-artifact reload consistency. Chunk records and embeddings are associated by row order. Revised reload checks compare missing-value masks as well as normalized values. These checks establish numerical and persistence properties, not relevance or grounded-answer quality. Execution verification is tracked in the completion checklist.
+Vector and BM25 search each return up to 20 chunks. Equal-weight RRF combines
+their rankings with k=60. BAAI/bge-reranker-v2-m3 then scores query/chunk pairs in
+batches of four, after checking the 512-token pair limit. Results keep the best
+candidate chunk per distinct job. This does not merge a job's full description.
 
-### Implemented retrieval experiments
+An explicit location filter restricts both retrievers before their result limits.
+It uses case-insensitive literal matching against recorded location strings.
+It does not infer geography, aliases, or remote eligibility from the question.
 
-Chroma stores 3,618 vectors with chunk text and metadata using cosine distance. A direct record check verified text, metadata, and vector consistency for one record. Notebook 03 provides the vector-only baseline; notebook 04 independently reloads chunks and reconnects to the populated collection.
+## 3. Local answers
 
-BM25 searches metadata and chunk text using a shared query/document tokenizer. The tokenizer normalizes case, preserves C++ and C#, and separates common CJK/kana characters as a simple fallback. It does not translate, stem words, or perform linguistic CJK word segmentation. Full locations are searchable keywords. The reusable pipeline also restricts both retrievers to IDs whose recorded locations contain the explicit filter text, ignoring case. This does not resolve aliases or geographic equivalence.
+The answer model is qwen3:4b-instruct-2507-q4_K_M through local Ollama. Early
+free-form answers overstated skills and produced incorrect inline citations.
+Prompt-only revisions did not reliably fix those errors.
 
-Up to 20 candidates from each retriever are combined using equal-weight Reciprocal Rank Fusion with k=60. The example query produced 34 unique chunks. BAAI/bge-reranker-v2-m3 scores query/contextual-chunk pairs on GPU in batches of four. All example pairs fit the configured 512-token pair limit, with a maximum of 435. Final job presentation keeps each job's best-scoring candidate chunk.
+The current model selects up to three numbered source lines per job. A per-request
+JSON schema limits the choices to that source. Application code checks the choices,
+copies the text, and attaches the actual job ID. Empty selections produce an
+insufficient-evidence answer; empty retrieval skips generation. Known metadata can
+also be selected for company, location, level, and publication date.
 
-## 3. Setup and installation
+This prevents model-written paraphrase and citation-typing errors in this adapter.
+It does not guarantee relevant or complete evidence. Quotes can contain boilerplate,
+repetition, or text cut at chunk boundaries. Historical data cannot establish
+current application availability. See answer_design.md for the validation flow.
 
-The retrieval stages are also implemented as reusable modules under src/job_rag.
-JobSearch composes hybrid candidates, pair-length-checked reranking, and distinct
-job results while retaining evidence text and chunk identifiers. Fifty-eight
-automated utility/orchestration checks pass; a real GPU run reproduced the
-notebook example's five distinct jobs in the same order. Data preparation is also available through the installed ingestion command.
+## 4. Setup and API
 
-The development environment is Windows with Python 3.10.11 and an NVIDIA GPU. The README documents dependency installation and notebook execution order. Model files require a download on first use. The installed job-rag command supports ingestion, JSON search, and local answers. FastAPI provides the HTTP interface.
+The tested machine uses Windows, Python 3.10.11, and an RTX 4060 Laptop GPU with
+8 GB VRAM. Ingestion and notebooks use CUDA. The API uses CPU retrieval to leave
+GPU memory for Ollama. It runs locally without a paid API or model API key.
 
-## 4. Example usage
+The README contains installation and startup commands. job-rag ingest prepares
+the data/index; search returns ranked evidence; ask adds the local answer step.
+The original workbook is unchanged. If ingestion is interrupted, it must be rerun
+because files and database updates are not one transaction.
 
-Implemented endpoint: `POST /api/query`.
+POST /api/query accepts:
 
-Requests include query, optional top_k (default 2, range 1-5), and optional literal location filter. Responses contain a generated answer, cited job IDs, retrieved evidence and scores, and the normalized request fields. Empty retrieval skips generation. Validation failures return 422, busy/local pipeline failures return 503, and unexpected errors return sanitized 500 responses. One shared service is loaded during startup with CPU retrieval and local Ollama generation. Setup and PowerShell request examples are in docs/api_usage.md. This is a local review configuration; broader API and grounding evaluation remain pending.
+```json
+{
+  "query": "Python backend developer working with APIs and databases",
+  "top_k": 2
+}
+```
 
-## 5. Evaluation and interpretation
+top_k defaults to 2 and accepts 1-5. An optional location field applies the filter.
+The response includes answer, cited_job_ids, jobs with source text/chunk IDs/scores,
+and normalized request fields. Missing metadata becomes JSON null.
 
-An initial known-item comparison used eight assistant-curated source-derived
-queries, covering six categories and a Chinese query. Vector and hybrid search
-found all eight target jobs at rank 1. Reranking found seven at rank 1 and one
-at rank 2; every method found all eight targets within five jobs. MRR@5 was
-1.0000, 1.0000, and 0.9375, respectively. The alternate first result in the last
-case is another relevant meal-plan marketing internship. These are target-discovery
-metrics with incomplete relevance judgments, not overall accuracy or exhaustive
-recall. No general improvement from the optional enhancements was demonstrated.
+No eligible jobs returns HTTP 200 with empty results. Invalid input/model limits
+return 422; busy or failed local inference returns 503; unexpected errors return
+500 without internal details. One service loads at startup and processes one
+inference at a time. GET /health checks retrieval readiness, not Ollama availability.
+The listener is bound to 127.0.0.1 for local review. See api_usage.md for examples.
 
-Mean retrieval-stage times in one CUDA run were 0.122 seconds (vector), 0.173
-(hybrid), and 6.476 (reranked), excluding model startup and generation. These
-are not CPU API latency estimates. Three fixed-evidence local-generation cases
-tested partial matches, missing salary, and current availability. The initial
-run exposed technical-grouping/qualifier errors and an answer rejected for
-missing inline citations. Initial and revised outputs are retained separately.
-See docs/evaluation.md and evaluation/ for methodology, results, provenance, and
-remaining independent review. Broader judged relevance and repeated performance
-measurements remain pending.
+## 5. Evaluation
 
-Prompt trials did not eliminate grounding problems. The selected longer revision
-still produced unsupported qualifier wording and invalid citations in the fixed
-cases; a shorter trial restored availability citations but introduced unsupported
-API/direct-match claims and was discarded. All trial outputs are retained. The
-93 passing automated tests check implementation contracts, not model truthfulness.
-Those observations motivated a constrained answer revision: the model selects
-numbered source lines and the application validates and renders quotations plus
-actual job IDs. It no longer accepts model-written factual paraphrases or inline
-citation strings. Five expanded fixed-evidence cases passed reference checks.
-Assistant source review found preserved skill qualifiers, appropriate abstention
-for unknown salary/current status, the stated salary range with conditions, and
-recorded location. The skill case still selected a less relevant line and did not
-explicitly enumerate missing API evidence. Thus source fidelity improved by design,
-while selection relevance/completeness and independent review remain necessary.
-The current automated suite has 106 passing tests. See docs/answer_design.md for
-the implementation and evaluation/answer_review_extractive.json for review scope.
+Eight assistant-curated, source-derived queries test whether a known target job
+is found. They cover six categories and include a Chinese query. These are
+development cases, not independent labels or a held-out set. Other jobs remain
+unjudged, so exhaustive recall, precision, and general accuracy are not claimed.
 
-On October 29, twelve live API cases checked mixed-case location filters, unknown
-locations, invalid input, Chinese/Japanese targets, missing salary/current status,
-unsupported skills, a misleading instruction, and metadata. Contract checks passed.
-Three known targets ranked first; four unsupported-fact cases abstained. This is
-not an exhaustive relevance/adversarial result. Source review found repeated Chinese
-evidence and partly relevant Japanese secondary output. Eight inference requests
-averaged 17.65 seconds excluding startup; differing workloads and one run per case
-preclude benchmark claims. The suite has 106 passing tests. See docs/api_evaluation.md
-for responses, review scope, and remaining validation.
+| Method | Target first | Target in top five | MRR@5 | Mean retrieval seconds |
+| --- | ---: | ---: | ---: | ---: |
+| Vector | 8/8 | 8/8 | 1.0000 | 0.122 |
+| Hybrid | 8/8 | 8/8 | 1.0000 | 0.173 |
+| Hybrid + reranker | 7/8 | 8/8 | 0.9375 | 6.476 |
 
-For the exploratory query "Python backend developer working with APIs and databases", fusion ranked LF0247 first, while reranking placed LF0265 first. LF0247's inspected chunk supports backend work, Python as an accepted language, and database technologies. LF0265 explicitly requires Python but its inspected chunk does not establish API or database work. The results illustrate partial matches and the need to evaluate against explicit relevance criteria. They do not demonstrate overall improvement from hybrid search or reranking.
+The displaced target was behind another relevant meal-plan internship. This small
+set does not show a general improvement from either optional enhancement. Timing
+is one CUDA run excluding startup and generation, not a repeated benchmark.
 
-## 6. Assumptions
+Five fixed-evidence answer cases checked partial skills, missing salary/current
+status, a known salary range, and recorded location. All passed reference checks.
+Assistant source review found supported quotes and appropriate abstentions, but
+also a less relevant selected line and no explicit list of missing API evidence.
 
-- The supplied workbook is the source of job information.
-- Publication dates do not establish that a listing remains open.
-- The diabetes classification sentence appears unrelated to the job RAG requirements.
+Twelve live API cases covered mixed-case location filters, unknown locations,
+invalid inputs, Chinese/Japanese targets, unsupported facts, one misleading user
+instruction, and metadata. All applicable contract checks passed. Three known
+targets ranked first; four unsupported-fact cases abstained. Review found repeated
+Chinese source text and generic/fragmentary Japanese secondary evidence.
 
+The eight inference requests averaged 17.65 seconds excluding startup. Different
+workloads and one run per case preclude benchmark claims. Unit tests mock models
+and database calls; real ingestion, generation, and HTTP checks are separate.
+All 106 automated tests pass. Results, raw outputs, query provenance, and review
+limits are retained in evaluation/ and described in evaluation.md/api_evaluation.md.
 
-## 7. Drawbacks and future enhancements
+## 6. Reproducibility
 
-Current limitations include historical listings, location filtering without alias or geographic resolution, basic keyword tokenization, sentence boundaries within token windows, and job ranking from a single candidate chunk. The example also shows that a reranked result can omit requested skills. Future changes will be assessed using labeled queries rather than a single example.
+All four notebooks completed in separate fresh kernels on October 28. On October
+29, a new Python 3.10.11 environment with no system site-packages installed the
+development requirements and editable package. pip check and all 106 tests passed.
 
-## 8. Reproducibility and submission
+A separate source snapshot rebuilt 1,000 jobs, 3,618 chunks, normalized vectors,
+and Chroma records. IDs, text, and embedding inputs matched working artifacts;
+vectors matched within 1e-5. Import paths were checked. A fresh API query returned
+the expected LF0265/LF0247 jobs with valid source quotes/citations in 37.86 seconds
+after startup. The temporary server was stopped afterward.
 
-On October 28, 2026, all four revised notebooks completed in separate fresh kernels
-in the existing project environment using cached models. Dependency checks passed.
-A real API check passed health, generated-query, empty-filter, and blank-query
-validation checks. One query took about 55 seconds after startup. Broader checks
-and fresh installation followed on October 29, as recorded below.
+The same Windows machine, driver, and existing package/model caches were used.
+This does not test another platform, a clean user profile, or first-model downloads.
+Ten indirect dependency versions differed from the earlier working snapshot; both
+sets are retained. See setup_verification.md and the dated environment records.
 
-A new Python 3.10.11 environment with no system site-packages installed the
-development requirements and editable package successfully. All 106 tests and
-pip check passed. A separate source snapshot rebuilt 1,000 jobs, 3,618 chunks,
-normalized (3618, 384) vectors, and Chroma records. IDs, source text, and contextual
-inputs matched working artifacts; vectors matched within 1e-5. Clean import paths
-were verified. A temporary fresh API server returned the expected LF0265/LF0247
-jobs with valid source quotes/citations in 37.86 seconds after startup, then was
-stopped. Existing package/model caches and the same Windows/GPU were reused; this
-is not a first-model-download or other-machine test. Exact versions and dependency
-differences are retained in evaluation/fresh_environment_2026-10-29.txt and
-evaluation/fresh_install_2026-10-29.json. See docs/setup_verification.md for scope.
-Independent relevance review, repeated benchmarks, final report publication,
-and reviewer-access checks remain pending.
+## 7. Limitations and further work
 
-## Command-line and grounded-answer preparation
+Listings are historical. Location matching is literal, keyword segmentation is
+basic, and token windows can split sentences. One-chunk job ranking can miss
+requirements elsewhere in a description. Evidence selection can repeat passages,
+include headings, or return only partial matches.
 
-The package installs in editable mode and exposes job-rag ingest and job-rag search.
-A full isolated ingestion reproduced the notebook's 1,000 jobs, 3,618 chunks, and
-384-dimensional vectors; chunk IDs, text, contextual inputs, and vector values
-were compared against the notebook artifacts. The installed search command
-returned valid JSON with expected job IDs and source evidence from that rebuilt
-database. Optional missing values are serialized as JSON null.
+Next steps are independent relevance review, harder/no-answer queries, source-
+prompt tests, multi-chunk evidence, and repeated latency/memory measurements.
+Current checks do not establish production throughput or broad adversarial robustness.
 
-A provider-independent answer service and prompt are prepared. Answers must refer
-to known retrieved job IDs, and declared citations must match inline references.
-Empty retrieval bypasses generation. Unit checks use fake generator outputs;
-the service also connects to a downloaded Qwen3 4B instruct model through local
-Ollama. The ask command returns a generated answer plus source excerpts and
-citations without a paid API dependency. The adapter restricts requests to
-loopback, disables proxies/redirects, and has no cloud fallback.
+## 8. Assumptions and submission
 
-A full retrieval, reranking, and local generation run took approximately 97
-seconds with CPU retrieval on the development machine. It returned valid JSON
-and known citations, but the answer overstated some requirements. The prompt
-was subsequently tightened. Citation consistency does not establish factual
-grounding; systematic live-model evaluation remains pending. The suite now
-contains 106 passing tests, including 10 API contract tests with injected services.
-The real API response still grouped Kafka and MQ as databases, rather than
-messaging frameworks. This is a documented generation error to cover in the
-grounding evaluation.
+The supplied workbook is the source of job information. The assignment's isolated
+diabetes-classification sentence is treated as a copy-paste error; the implementation
+follows its job-RAG requirements. Both optional enhancements are included.
+
+Code, notebooks, tests, and verification notes are in the repository. Final report
+review, the required Google Docs version, and reviewer access are still pending.

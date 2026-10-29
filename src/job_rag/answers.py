@@ -1,4 +1,4 @@
-"""Grounded-answer prompt and retrieval/generation composition."""
+"""Retrieve job evidence and check answer citations."""
 
 from dataclasses import dataclass
 import json
@@ -33,7 +33,7 @@ class GeneratedAnswer:
 
 
 class AnswerGenerator(Protocol):
-    """Contract implemented by the local Ollama adapter."""
+    """Interface for the answer generator."""
 
     def generate(self, system_prompt: str, user_prompt: str) -> GeneratedAnswer:
         ...
@@ -47,7 +47,7 @@ class JobRetriever(Protocol):
 
 
 def build_user_prompt(query: str, jobs: list[dict[str, object]]) -> str:
-    """Serialize question and evidence as data without including ranking scores."""
+    """Pass the question and sources to the model, leaving out search scores."""
     fields = [
         "job_id", "title", "company", "location", "level",
         "publication_date", "source_chunk_id", "evidence",
@@ -57,7 +57,7 @@ def build_user_prompt(query: str, jobs: list[dict[str, object]]) -> str:
 
 
 class GroundedAnswerService:
-    """Compose retrieval and an explicitly supplied LLM adapter."""
+    """Run retrieval, generate an answer, and check its source IDs."""
 
     def __init__(self, retriever: JobRetriever, generator: AnswerGenerator):
         self.retriever = retriever
@@ -78,8 +78,7 @@ class GroundedAnswerService:
             raise RuntimeError("The answer generator returned empty text.")
         known_ids = {job["job_id"] for job in jobs}
         cited_ids = set(generated.cited_job_ids)
-        # Source quotations can themselves contain bracketed text. Only the
-        # surrounding application/answer text is interpreted as source references.
+        # Ignore brackets inside quoted source text when checking citations.
         reference_text = "\n".join(line for line in generated.text.splitlines() if not line.startswith("> "))
         inline_ids = set(re.findall(r"\[([^\[\]\r\n]+)\]", reference_text))
         if not cited_ids or not cited_ids.issubset(known_ids) or inline_ids != cited_ids:

@@ -1,10 +1,10 @@
-"""Convert ranked jobs into JSON-safe records with explicit evidence."""
+"""Format ranked jobs and evidence for JSON output."""
 
 import pandas as pd
 
 
 def serialize_jobs(jobs: pd.DataFrame) -> list[dict[str, object]]:
-    """Keep IDs, evidence, and missing metadata explicit at the output boundary."""
+    """Keep source IDs and text; convert missing values to JSON null."""
     def optional_text(value: object) -> str | None:
         return None if pd.isna(value) else str(value)
 
