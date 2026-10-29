@@ -79,8 +79,18 @@ for unknown salary/current status, the stated salary range with conditions, and
 recorded location. The skill case still selected a less relevant line and did not
 explicitly enumerate missing API evidence. Thus source fidelity improved by design,
 while selection relevance/completeness and independent review remain necessary.
-The current automated suite has 99 passing tests. See docs/answer_design.md for
+The current automated suite has 106 passing tests. See docs/answer_design.md for
 the implementation and evaluation/answer_review_extractive.json for review scope.
+
+On October 29, twelve live API cases checked mixed-case location filters, unknown
+locations, invalid input, Chinese/Japanese targets, missing salary/current status,
+unsupported skills, a misleading instruction, and metadata. Contract checks passed.
+Three known targets ranked first; four unsupported-fact cases abstained. This is
+not an exhaustive relevance/adversarial result. Source review found repeated Chinese
+evidence and partly relevant Japanese secondary output. Eight inference requests
+averaged 17.65 seconds excluding startup; differing workloads and one run per case
+preclude benchmark claims. The suite has 106 passing tests. See docs/api_evaluation.md
+for responses, review scope, and remaining validation.
 
 For the exploratory query "Python backend developer working with APIs and databases", fusion ranked LF0247 first, while reranking placed LF0265 first. LF0247's inspected chunk supports backend work, Python as an accepted language, and database technologies. LF0265 explicitly requires Python but its inspected chunk does not establish API or database work. The results illustrate partial matches and the need to evaluate against explicit relevance criteria. They do not demonstrate overall improvement from hybrid search or reranking.
 
@@ -97,7 +107,25 @@ Current limitations include historical listings, location filtering without alia
 
 ## 8. Reproducibility and submission
 
-On October 28, 2026, all four revised notebooks completed in separate fresh kernels in the existing project environment using cached model files. Dependency compatibility checks passed. A real loopback API check passed health, generated-query, empty-filter-result, and blank-query validation checks. One query took about 55 seconds after startup. Fresh-environment installation, broader failure/grounding evaluation, final report publication, and reviewer-access checks remain pending.
+On October 28, 2026, all four revised notebooks completed in separate fresh kernels
+in the existing project environment using cached models. Dependency checks passed.
+A real API check passed health, generated-query, empty-filter, and blank-query
+validation checks. One query took about 55 seconds after startup. Broader checks
+and fresh installation followed on October 29, as recorded below.
+
+A new Python 3.10.11 environment with no system site-packages installed the
+development requirements and editable package successfully. All 106 tests and
+pip check passed. A separate source snapshot rebuilt 1,000 jobs, 3,618 chunks,
+normalized (3618, 384) vectors, and Chroma records. IDs, source text, and contextual
+inputs matched working artifacts; vectors matched within 1e-5. Clean import paths
+were verified. A temporary fresh API server returned the expected LF0265/LF0247
+jobs with valid source quotes/citations in 37.86 seconds after startup, then was
+stopped. Existing package/model caches and the same Windows/GPU were reused; this
+is not a first-model-download or other-machine test. Exact versions and dependency
+differences are retained in evaluation/fresh_environment_2026-10-29.txt and
+evaluation/fresh_install_2026-10-29.json. See docs/setup_verification.md for scope.
+Independent relevance review, repeated benchmarks, final report publication,
+and reviewer-access checks remain pending.
 
 ## Command-line and grounded-answer preparation
 
@@ -121,7 +149,7 @@ seconds with CPU retrieval on the development machine. It returned valid JSON
 and known citations, but the answer overstated some requirements. The prompt
 was subsequently tightened. Citation consistency does not establish factual
 grounding; systematic live-model evaluation remains pending. The suite now
-contains 99 passing tests, including 10 API contract tests with injected services.
+contains 106 passing tests, including 10 API contract tests with injected services.
 The real API response still grouped Kafka and MQ as databases, rather than
 messaging frameworks. This is a documented generation error to cover in the
 grounding evaluation.

@@ -1,0 +1,20 @@
+{
+  "reviewer": "Assistant source review; independent human review pending",
+  "results_file": "api_results_2026-10-29.json",
+  "scope": "Twelve sequential local API development requests; one observation per case",
+  "observations": [
+    {"case_id": "A01", "review": "Mixed-case Singapore filter held. LF0247 ranked first with backend/language alternatives and databases/messaging frameworks. Secondary job supports only part of the query."},
+    {"case_id": "A02", "review": "Unknown location produced empty jobs/citations with an explanatory answer."},
+    {"case_id": "A03", "review": "Blank query rejected with HTTP 422."},
+    {"case_id": "A04", "review": "top_k above 5 rejected with HTTP 422."},
+    {"case_id": "A05", "review": "Blank location rejected with HTTP 422."},
+    {"case_id": "A06", "review": "Chinese query found LF0204 first under mixed-case Shanghai filtering. Source lines support industrial C++/C#, PLC, and Modbus/EtherCAT. Answer repeats a paragraph present twice in the source. LF0763 had no selected evidence."},
+    {"case_id": "A07", "review": "Japanese SAP AMS query found LF0304 first with relevant Japanese duties. Secondary LF0701 supplied generic project-management text, an incomplete heading, and company metadata without specific SAP evidence."},
+    {"case_id": "A08", "review": "Answer abstained from unsupported exact salary."},
+    {"case_id": "A09", "review": "Answer abstained from confirming current vacancy availability."},
+    {"case_id": "A10", "review": "Answer abstained from unsupported astronaut/spacecraft qualifications."},
+    {"case_id": "A11", "review": "One misleading user instruction did not produce the invented salary/current-status claim. This does not establish comprehensive user- or source-prompt robustness."},
+    {"case_id": "A12", "review": "Answer quoted recorded location Brezno, Slovakia."}
+  ],
+  "remaining_limits": ["Repeated source text can produce repeated quotations.", "Secondary jobs/headings/metadata can be only partially relevant.", "No exhaustive relevance labels, independent human review, repeated timing, concurrency benchmark, or comprehensive adversarial testing."]
+}

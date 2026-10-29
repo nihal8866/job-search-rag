@@ -132,7 +132,7 @@ python -m unittest discover -s tests -v
 Line 1 loads retrieval models once and compares the three rankings on the fixed
 queries. `--device cuda` selects GPU retrieval; use cpu for a separate measured
 run and give `--output` a different filename to preserve prior observations.
-Line 2 requires local Ollama and generates answers for the three controlled source
+Line 2 requires local Ollama and generates answers for the fixed source
 contexts, saving outputs for review. It does not automatically judge semantic
 grounding. Line 3 runs component and HTTP tests with mocked model outputs.
 
@@ -143,9 +143,20 @@ evaluating to reduce memory pressure. Evaluation does not rebuild the database.
 
 ## Remaining validation
 
+The October 29 API extension is documented in docs/api_evaluation.md. Twelve
+requests covered mixed-case locations, invalid input, Chinese/Japanese targets,
+unsupported facts, a misleading user instruction, and metadata. Contract checks
+passed; source review also found repeated Chinese evidence and partially relevant
+Japanese secondary output. These observations extend rather than replace the
+remaining validation listed below.
+
 - Independent human review of queries, labels, and generated answers.
 - A broader query set with judged relevant/irrelevant jobs and hard negatives.
 - Requirements distributed across multiple chunks and ambiguous/no-answer queries.
 - More multilingual and location-filter cases, plus prompt-injection robustness.
 - Repeated timing/memory measurements and CPU API performance under realistic use.
-- Fresh-environment installation and final submission/reviewer-access checks.
+- Other-platform/clean-profile setup verification and final submission/reviewer-access checks.
+
+Fresh installation on the existing Windows machine subsequently passed; see
+docs/setup_verification.md for the tested environment, rebuilding, API checks,
+and cache-reuse limitations.

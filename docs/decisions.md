@@ -130,5 +130,5 @@ work; a busy request receives 503 with Retry-After. Bad input/model limits retur
 422, local pipeline failures return 503, and unexpected errors return 500 without
 internal details. Health reports retrieval readiness, not Ollama availability.
 No-match filters return successful empty results without generation. The server
-binds to loopback for local review. The current 99-test suite includes 10 HTTP contract
+binds to loopback for local review. The current 106-test suite includes 10 HTTP contract
 tests with injected services; model quality is evaluated separately.

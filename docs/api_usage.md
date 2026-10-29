@@ -48,7 +48,7 @@ They establish valid references, not factual correctness.
 
 ## Verification
 
-The current 99-test suite includes 10 API tests using an injected service: successful
+The current 106-test suite includes 10 API tests using an injected service: successful
 responses, normalization, service reuse, malformed/invalid inputs, no matches,
 busy inference, sanitized failures, invalid service output, health/OpenAPI, and
 startup failures. These do not measure model quality. Real-model HTTP validation

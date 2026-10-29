@@ -1,0 +1,147 @@
+{
+  "recorded_at_utc": "2026-10-29T05:10:18.647983+00:00",
+  "python": "3.10.11",
+  "method": "Fresh venv without system site packages; source snapshot excludes Git-ignored files; working .venv/data untouched.",
+  "limitations": "Same Windows computer; public pip cache and already-downloaded model cache may be reused. Not another operating system or a from-zero model download.",
+  "steps": {
+    "source_snapshot": {
+      "status": "passed",
+      "ignored_artifacts_copied": false
+    },
+    "install_development_requirements": {
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 578.22
+    },
+    "editable_install": {
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 9.39
+    },
+    "dependency_check": {
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 5.75
+    },
+    "unit_tests": {
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 29.03
+    },
+    "isolated_ingestion": {
+      "status": "passed",
+      "exit_code": 0,
+      "seconds": 55.48
+    }
+  },
+  "source_file_count": 73,
+  "source_manifest_sha256": "d4aeb891aaa12af0ffcbbce8e5ae058ae452574c601d96b8e750139a04dbfbc9",
+  "isolation_checks": {
+    "prefix_is_fresh_venv": true,
+    "not_base_interpreter": true,
+    "package_imported_from_snapshot": true,
+    "working_venv_absent_from_sys_path": true
+  },
+  "runtime_versions": {
+    "torch": "2.11.0+cu128",
+    "transformers": "5.20.2",
+    "sentence-transformers": "6.2.0",
+    "chromadb": "1.5.9",
+    "fastapi": "0.162.0",
+    "pydantic": "2.14.1",
+    "uvicorn": "0.54.0",
+    "httpx": "0.28.1",
+    "huggingface-hub": "2.3.0",
+    "filelock": "4.1.0"
+  },
+  "setup_file_sha256": {
+    "requirements.txt": "897d57119dd09b955b8aafa703ae43f2c59775e2d87367b231efa5deab662778",
+    "requirements-dev.txt": "91d5128cafb5316e88bf45d976243fb5447bf78c30cf9b5dd3f33afbec3e302a",
+    "pyproject.toml": "22b8c5b91b7bdb757de81c358c3e0c21e04570490db388de201c4bb60fce374e"
+  },
+  "cuda_available": true,
+  "test_count": 106,
+  "artifact_checks": {
+    "jobs": 1000,
+    "chunks": 3618,
+    "vector_shape": [
+      3618,
+      384
+    ],
+    "matching_ids_text_and_embedding_inputs": true,
+    "vectors_allclose_to_working_artifacts": true,
+    "vector_comparison_atol": 1e-05,
+    "vector_comparison_rtol": 1e-05,
+    "minimum_vector_norm": 0.9999999403953552,
+    "maximum_vector_norm": 1.0000001192092896,
+    "chroma_count": 3618,
+    "dataset_sha256_matches_working_source": true
+  },
+  "fresh_api": {
+    "status": "passed",
+    "health": "passed",
+    "query_seconds_after_startup": 37.86,
+    "job_ids": [
+      "LF0265",
+      "LF0247"
+    ],
+    "contract_checks": {
+      "expected_status": true,
+      "nonempty_answer": true,
+      "request_fields_match": true,
+      "distinct_jobs_and_limit": true,
+      "citations_match_jobs": true,
+      "quoted_lines_match_cited_evidence": true,
+      "constrained_answer_format": true
+    }
+  },
+  "overall_status": "passed",
+  "environment_snapshot_comparison": {
+    "changed": {
+      "certifi": {
+        "recorded_working": "2026.10.19",
+        "fresh": "2026.10.23"
+      },
+      "filelock": {
+        "recorded_working": "3.32.3",
+        "fresh": "4.1.0"
+      },
+      "fsspec": {
+        "recorded_working": "2026.7.0",
+        "fresh": "2026.9.0"
+      },
+      "hf-xet": {
+        "recorded_working": "1.7.0",
+        "fresh": "1.7.1"
+      },
+      "jsonpointer": {
+        "recorded_working": "3.4",
+        "fresh": "3.6"
+      },
+      "jupyter-builder": {
+        "recorded_working": "1.2.3",
+        "fresh": "1.2.4"
+      },
+      "python-dateutil": {
+        "recorded_working": "2.9.0.post0",
+        "fresh": "3.0.0"
+      },
+      "pywinpty": {
+        "recorded_working": "3.1.0",
+        "fresh": "3.1.2"
+      },
+      "tzdata": {
+        "recorded_working": "2026.5",
+        "fresh": "2026.6"
+      },
+      "wcwidth": {
+        "recorded_working": "0.9.2",
+        "fresh": "0.9.4"
+      }
+    },
+    "only_fresh": {
+      "pip": "23.0.1"
+    },
+    "only_recorded": {}
+  }
+}

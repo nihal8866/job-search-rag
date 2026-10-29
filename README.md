@@ -40,8 +40,8 @@ From the project root in PowerShell:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements-dev.txt
-python -m pip install --no-build-isolation --no-deps -e .
+python -m pip --isolated install --index-url https://pypi.org/simple -r requirements-dev.txt
+python -m pip --isolated install --no-build-isolation --no-deps -e .
 python -m pip check
 ```
 
@@ -50,10 +50,14 @@ python -m pip check
 - `requirements-lock.txt`: the full Windows environment snapshot, including
   transitive dependencies. Install this file instead for the recorded environment.
 
-Dependency files include the PyTorch CUDA 12.8 wheel source. Installation in a
-new environment remains a final submission check. Hugging Face model files
-download on first use and are cached locally. The current retrieval notebooks
-do not require an LLM API key.
+Dependency files include the PyTorch CUDA 12.8 wheel source. The isolated/public-
+index options make resolution independent of user-specific pip settings.
+The setup passed in a fresh Python 3.10.11 environment on October 29: 106 tests,
+isolated ingestion, artifact comparison, and a real API query passed. See
+[setup verification](docs/setup_verification.md) for versions, scope, and cache
+reuse. The full fresh environment is recorded separately in
+evaluation/fresh_environment_2026-10-29.txt. Hugging Face models download on first
+use and are cached locally. Local inference needs no model API key.
 
 The editable installation provides `job-rag` and makes `job_rag` importable without
 setting `PYTHONPATH`. It uses the build tools installed with the development
@@ -89,8 +93,8 @@ job-rag --device cpu search "Python developer"
 job-rag --project-root C:\\path\\to\\project ingest --dataset C:\\path\\to\\jobs.xlsx
 ```
 
-`python -m job_rag` accepts the same arguments. The CPU option is available but
-performance verification so far uses the NVIDIA GPU. With a non-editable package
+`python -m job_rag` accepts the same arguments. CPU retrieval is exercised by the
+local API; ingestion and retrieval comparison used the GPU. With a non-editable package
 installation, use `--project-root` when running outside the data directory.
 
 ## Notebook order
@@ -137,6 +141,9 @@ API or database work. This is a functional example, not a measured quality gain.
 - Initial known-item and fixed-evidence generation checks are recorded in
   [evaluation notes](docs/evaluation.md); broader relevance/grounding evaluation
   and repeated latency benchmarks remain pending.
+- Twelve live API development cases are recorded in [API evaluation](docs/api_evaluation.md),
+  including multilingual queries and unsupported facts. Contract checks are
+  distinct from relevance accuracy.
 
 ## Layout and documentation
 
@@ -145,14 +152,14 @@ data/raw/       Supplied workbook
 docs/           Assignment, decision notes, report draft, and checklist
 notebooks/      Data preparation and retrieval experiments
 src/job_rag/    Ingestion, retrieval, reranking, and local answer generation
-scripts/        Repository secret-pattern checker
+scripts/        Evaluation runners and repository secret-pattern checker
 tests/          Component, CLI, and API contract checks
 ```
 
 See [engineering decisions](docs/decisions.md), the [report draft](docs/report.md),
 the [completion checklist](docs/project_plan.md), and the
 [assignment](docs/GenAI_Takeaway_Assignment.pdf). Final delivery also requires
-evaluation, fresh-environment verification, and a Google Docs report.
+independent review, final submission checks, and a Google Docs report.
 
 ## Utility checks
 

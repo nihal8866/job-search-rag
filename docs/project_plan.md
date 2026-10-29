@@ -18,7 +18,7 @@
 - [x] Separate notebook responsibilities and remove temporary diagnostic cells.
 - [x] Organize direct dependencies, notebook tools, and the environment snapshot.
 - [x] Execute all four revised notebooks from fresh kernels.
-- [ ] Verify installation in a newly created environment.
+- [x] Verify installation, tests, isolated ingestion, artifact equivalence, and an API query in a new environment on the development machine.
 
 ## Remaining implementation
 
@@ -36,6 +36,7 @@
 - [x] Compare vector-only, hybrid, and reranked retrieval on eight labeled known-item cases.
 - [x] Record initial latency, three fixed-evidence grounding cases, and API failure checks.
 - [ ] Expand to independently reviewed relevance labels, harder queries, and repeated benchmarks.
+- [x] Run 12 broader live API cases for multilingual/location behavior, invalid input, missing facts, and misleading instructions.
 - [x] Replace the observed free-form paraphrase/ID failure path with validated source-line answers and verify five regression cases.
 - [x] Add local setup instructions and API request examples.
 - [ ] Complete the report, limitations, and future enhancements.
@@ -124,3 +125,25 @@ The revised adapter was also tested through a temporary real loopback API:
 health, generated query, empty location filter, and blank-query 422 passed.
 The generated query took approximately 41 seconds after startup in that run;
 this is an observation, not a benchmark. The test server was stopped afterward.
+
+## Broader API evaluation — October 29, 2026
+
+Twelve requests passed applicable contract checks. Three source-derived targets
+ranked first, four unsupported-fact/misleading-instruction cases abstained, and
+recorded location was quoted. Source review found repeated Chinese evidence and
+generic/fragmentary Japanese secondary evidence. Results are in evaluation/ and
+docs/api_evaluation.md. Stored outputs can be rechecked without inference. All
+106 automated tests pass. Independent relevance review, broader adversarial
+tests, repeated benchmarks, and fresh installation remain pending.
+
+## Fresh setup verification — October 29, 2026
+
+A new Python 3.10.11 environment passed requirements/editable installation, pip
+check, and all 106 tests. Isolated ingestion rebuilt 1,000 jobs, 3,618 chunks,
+normalized (3618, 384) vectors, and Chroma records. IDs/text/inputs matched working
+artifacts; vectors matched within 1e-5. Imports used the snapshot/new environment.
+A fresh API server passed health and a real query returning LF0265/LF0247 with
+valid source quotes in 37.86 seconds after startup, then was stopped. Main data,
+index, and .venv were not modified. The same Windows/GPU and package/model caches
+were reused; another-machine and first-model-download checks remain outside this
+scope. See docs/setup_verification.md and evaluation/fresh_install_2026-10-29.json.
