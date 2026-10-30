@@ -1,12 +1,35 @@
 # Job Search RAG Technical Report
 
+GenAI Takeaway Assignment
+
+Hybrid Search and Reranking with a Local LLM
+
+Repository: https://github.com/nihal8866/job-search-rag
+
+## Table of Contents
+
+- [1. Problem and data](#1-problem-and-data)
+- [2. Data preparation and search](#2-data-preparation-and-search)
+  - [Reasons for the main choices](#reasons-for-the-main-choices)
+- [3. Local answers](#3-local-answers)
+- [4. Setup and API](#4-setup-and-api)
+  - [Installation from the repository](#installation-from-the-repository)
+  - [Recorded requests and responses](#recorded-requests-and-responses)
+- [5. Evaluation](#5-evaluation)
+- [6. Reproducibility](#6-reproducibility)
+- [7. Limitations and further work](#7-limitations-and-further-work)
+- [8. Assumptions and submission](#8-assumptions-and-submission)
+
+## List of Figures
+
+- Fig 1: Data Preparation Pipeline
+- Fig 2: Question Answering Pipeline
+
 This project searches the supplied job listings and returns relevant jobs with
 quoted source evidence. It includes the required RAG pipeline and FastAPI endpoint,
 plus hybrid search and a cross-encoder reranker. All models run locally without a
 paid model API. The results below describe development checks; independent human
 relevance review remains future work.
-
-Repository: https://github.com/nihal8866/job-search-rag
 
 ## 1. Problem and data
 
@@ -27,9 +50,13 @@ The offline path prepares a persistent index:
 
 ![Data preparation flowchart](figures/data_preparation.png)
 
+Fig 1: Data Preparation Pipeline
+
 The query path combines semantic and keyword matches:
 
 ![Question answering flowchart](figures/question_answering.png)
+
+Fig 2: Question Answering Pipeline
 
 BeautifulSoup removes HTML while the original description and date strings are
 retained. Descriptions are split into 384-token windows with 48-token overlap.

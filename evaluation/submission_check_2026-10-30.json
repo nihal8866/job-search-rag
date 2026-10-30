@@ -4,11 +4,12 @@
   "checks": {
     "google_doc_text_matches_word_after_whitespace_normalization": true,
     "google_doc_eight_main_sections_and_four_by_five_results_table": true,
-    "word_and_google_pdf_nine_pages_visually_inspected": true,
-    "report_format": "Times New Roman, 12 pt, 1.5 line spacing, black text including links",
+    "word_and_google_pdf_eleven_pages_visually_inspected": true,
+    "report_format": "Times New Roman, 12 pt body, 18 pt cover title, 1.5 line spacing, black text including links",
     "formatting_revision_preserves_wording_after_whitespace_normalization": true,
     "two_flowcharts_embedded_and_match_source_png_files": true,
     "non_diagram_report_text_preserved_when_replacing_text_arrows": true,
+    "title_page_contents_list_of_figures_and_caption_page_numbers_verified": true,
     "google_docs_title_sanitizer_passed": true,
     "word_author_metadata_blank": true,
     "word_xml_credential_pattern_check_passed": true,
@@ -22,8 +23,8 @@
     "permissions_observed": "One user owner permission; manager access not yet granted."
   },
   "sha256": {
-    "docs/report.md": "49fc6c9a1693427b4fa975a2089033efc88b8938b097b45350047295ed3832c3",
-    "docs/job_search_rag_report.docx": "f1fafdafe73fcd38326ab6bedaf1221a713d6db875a53f5c17522d0d10af555a",
+    "docs/report.md": "1858097d97ca89fa2bcf576c09a2c02e091ce6688e9313337e53d6cb94b6d8c6",
+    "docs/job_search_rag_report.docx": "eb883b801e5ec7844a6104f4dc66c57e165601352b8d8dd9cbace766fc94f694",
     "docs/api_examples.json": "019f04b340fdc73046f53b1a03b725a06daeb079e0a34e44edb3597bd6df657d",
     "docs/figures/data_preparation.png": "bee9d359fa616962f271729952bb45a4a6448de10a17749c5b1710662c109c6b",
     "docs/figures/data_preparation.svg": "2b453c2a843f3c9c7cd18b35dc7d5e07c8ea5b0ec1eac2854acc172cee5cfab6",
@@ -34,5 +35,20 @@
     "Manager access verification",
     "User review and sending final submission links"
   ],
-  "test_note": "No application changes. Prior recorded 106-test and fresh-install results remain applicable; heavy inference was not repeated for document edits."
+  "test_note": "No application changes. Prior recorded 106-test and fresh-install results remain applicable; heavy inference was not repeated for document edits.",
+  "contents_pages": {
+    "1 Problem and data": 3,
+    "2 Data preparation and search": 3,
+    "Reasons for the main choices": 5,
+    "3 Local answers": 5,
+    "4 Setup and API": 6,
+    "Installation from the repository": 6,
+    "Recorded requests and responses": 8,
+    "5 Evaluation": 9,
+    "6 Reproducibility": 10,
+    "7 Limitations and further work": 11,
+    "8 Assumptions and submission": 11,
+    "Fig 1: Data Preparation Pipeline": 3,
+    "Fig 2: Question Answering Pipeline": 4
+  }
 }
