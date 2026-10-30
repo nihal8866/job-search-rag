@@ -200,6 +200,10 @@ The checker reports filenames and issue types, not matched values. It covers com
 patterns, not every secret format or binary/image content. Ignore rules do not
 remove committed files; revoke an exposed credential before handling its history.
 
-See the [report draft](docs/report.md), [decisions](docs/decisions.md),
+See the [technical report](docs/report.md), [decisions](docs/decisions.md),
 [checklist](docs/project_plan.md), and [assignment](docs/GenAI_Takeaway_Assignment.pdf).
-Final report review, Google Docs publication, and reviewer access are still pending.
+The [manager walkthrough](docs/submission.md) explains how to review and test the
+project. The [Google Docs report](https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit)
+and editable [Word copy](docs/job_search_rag_report.docx) are ready. The six-page
+Google Docs conversion was inspected; the report currently has owner-only access.
+Manager access must be granted and checked before submission.

@@ -1,0 +1,113 @@
+{
+  "source": "evaluation/api_results_2026-10-29.json",
+  "recorded_at_utc": "2026-10-29T04:59:44.676221+00:00",
+  "note": "Actual recorded development responses, not exact-output guarantees for future runs.",
+  "examples": [
+    {
+      "case_id": "A01",
+      "request": {
+        "query": "Python backend developer working with databases",
+        "location": "sInGaPoRe",
+        "top_k": 2
+      },
+      "status": 200,
+      "response": {
+        "query": "Python backend developer working with databases",
+        "location_filter": "sInGaPoRe",
+        "answer": "Selected evidence [LF0247]:\n> - Candidate should have at least 5 years of experience in developing highly scalable backend services and systems using at least one of the following programming languages: Java, Golang, or Python.\n> - In-depth knowledge of common databases and messaging frameworks such as MySQL, Redis, Kafka, and MQ is required.\n\nSelected evidence [LF0175]:\n> - At least 5 years of working experience in programming/coding, technical solution backend design, and delivery (to clients/advertisers)\n> - Familiar with one or more general programming languages,  including but not limited to: Python, Go, Java, C/C++",
+        "cited_job_ids": [
+          "LF0247",
+          "LF0175"
+        ],
+        "jobs": [
+          {
+            "rank": 1,
+            "job_id": "LF0247",
+            "title": "Backend Software Engineer - Global E-commerce (Governance Service)",
+            "company": "TikTok",
+            "location": "Singapore",
+            "level": "Senior Level",
+            "publication_date": "2025-03-27T00:30:14Z",
+            "source_chunk_id": "LF0247_chunk_001",
+            "evidence": "tical analysis.\n- Update software, enhances existing software capabilities, and develops and direct software testing and validation procedures.\nQualifications\nMinimum Qualifications:\n- Bachelor's or higher degree in Computer Science, Information Technology, Programming & System Analysis, Science (Computer Studies) or related discipline.\n- Candidate should have at least 5 years of experience in developing highly scalable backend services and systems using at least one of the following programming languages: Java, Golang, or Python.\n- Strong problem-solving skills and proficiency in software programming are essential, with a focus on good code design and coding style.\n- A deep understanding of data structures, algorithm design and analysis, networking, data security, and highly scalable systems design is expected.\n- In-depth knowledge of common databases and messaging frameworks such as MySQL, Redis, Kafka, and MQ is required.\nPreferred Qualifications:\n- Capable of providing elegant and efficient design solutions.",
+            "scores": {
+              "rrf": 0.03252247488101534,
+              "reranker": 0.28846776485443115,
+              "vector_distance": 0.13860797882080078,
+              "bm25": 18.912368682602192
+            }
+          },
+          {
+            "rank": 2,
+            "job_id": "LF0175",
+            "title": "Solutions Engineer, TikTok Ads",
+            "company": "TikTok",
+            "location": "Singapore",
+            "level": "Senior Level",
+            "publication_date": "2025-07-29T01:27:50Z",
+            "source_chunk_id": "LF0175_chunk_001",
+            "evidence": "their demands.\nAs a Solution Engineer, you will help to partner with different business verticals and enable the full potential of new features, products, and business opportunities. You will be working and supporting cross-functional teams of R&D, Customer Success, and Product Management. This role allows you to use TikTok's platforms and community to solve real-world business problems.\nResponsibilities:\n- Build new products, and enhance the existing ones in collaboration with TikTok product engineering teams to meet business needs.\n- Understand, apply and use TikTok's products and innovative technology, identify, develop, and maximize new and existing commercial prospects with advertising clients.\n- Cultivate close partnerships with the customer success team to identify potential business opportunities and support them in achieving business goals.\n- Design and build end-to-end systems and launch-plan strategies; launch production-level code, with an emphasis on long-term maintainability and scalability with applicable documentation and test plans, in collaboration with cross-functional teams.\n- Identify stakeholders independently and align cross-functional partners toward project completion goals.\n- Build and cultivate relationships with internal and external stakeholders.\n- Using Data to influence decision-making through the presentation of business value and impact\nQualifications\nMinimum Qualifications:\n- Bachelor's Degree, major in Computer Science or related fields\n- At least 5 years of working experience in programming/coding, technical solution backend design, and delivery (to clients/advertisers)\n- Familiar with one or more general programming languages,  including but not limited to: Python, Go, Java, C/C++\n- Strong ability to collaborate, communicate and manage advertising client and partner relationships\n-  Demonstrated",
+            "scores": {
+              "rrf": 0.030621785881252923,
+              "reranker": 0.027407949790358543,
+              "vector_distance": 0.16873443126678467,
+              "bm25": 13.015924285051788
+            }
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "A02",
+      "request": {
+        "query": "Python developer",
+        "location": "NO_SUCH_LOCATION_000",
+        "top_k": 2
+      },
+      "status": 200,
+      "response": {
+        "query": "Python developer",
+        "location_filter": "NO_SUCH_LOCATION_000",
+        "answer": "No jobs were retrieved for the requested search and filters.",
+        "cited_job_ids": [],
+        "jobs": []
+      }
+    },
+    {
+      "case_id": "A08",
+      "request": {
+        "query": "What is the exact annual salary for the EPAM Senior Python Developer?",
+        "location": "Brezno",
+        "top_k": 1
+      },
+      "status": 200,
+      "response": {
+        "query": "What is the exact annual salary for the EPAM Senior Python Developer?",
+        "location_filter": "Brezno",
+        "answer": "An answer is not established by the selected evidence for this job [LF0265].",
+        "cited_job_ids": [
+          "LF0265"
+        ],
+        "jobs": [
+          {
+            "rank": 1,
+            "job_id": "LF0265",
+            "title": "Senior Python Developer (with GenAI)",
+            "company": "EPAM Systems",
+            "location": "Brezno, Slovakia",
+            "level": "Senior Level",
+            "publication_date": "2024-10-30T00:44:23Z",
+            "source_chunk_id": "LF0265_chunk_000",
+            "evidence": "We are seeking a\nSenior Python Developer (with GenAI)\nto join the project, which involves adoption of Artificial Intelligence solutions by our clients and focusing on generative AI.\nIn this role, you will be responsible for delivering multiple Proof of Concepts (POCs) and solving challenges using generative AI. Our approach is fluid and dynamic. This is a role that offers the freedom to innovate and evolve.\n#LI-DNI\nResponsibilities\nDesign and integrate Generative AI solutions with existing systems or create new applications, ensuring the adoption of the latest advancements in Generative AI\nAct as the main point of contact for clients, responsible for gathering requirements and providing status updates\nCommunicate project progression to stakeholders, and present suitable architecture solutions based on business requests\nCollaborate with clients throughout the project timeline\nTackle unique challenges each PoC presents, with swift adaptation\nConsult with clients on potential use cases, despite the lack of extensively documented requirements\nShowcase the potential of custom AI solutions regularly, and flexibly adjust the approach as needed\nSupport the transition of PoC projects to production phase\nRequirements\nExperience or general knowledge in Generative AI and Large Language Models; software engineering expertise in these areas is not required\nProven capability as an individual contributor\nStrong prototyping coding and software development skills\nUnderstanding of differences between PoCs, MVPs, and enterprise development approaches\nGenuine engineering mindset, with an interest towards Research & Development\nHigh proficiency in Python is required\nFamiliarity with any of AWS, Azure, GCP\nNice to have\nExperience with JavaScript\nWe offer\nOpportunity to work in a fast-paced, agile, software engineering culture\nBenefit program (5 weeks of vacation, 5 paid sick days",
+            "scores": {
+              "rrf": 0.03252247488101534,
+              "reranker": 0.8113503456115723,
+              "vector_distance": 0.12560749053955078,
+              "bm25": 28.1244024711284
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

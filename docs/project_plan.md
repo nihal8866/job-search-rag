@@ -17,15 +17,23 @@
 - [x] Pass all 106 automated tests in the working and fresh environments.
 - [x] Rebuild artifacts and test a real API query in a fresh environment.
 - [x] Add setup instructions, API examples, and credential-pattern checks.
+- [x] Finalize report content against the assignment and include recorded responses.
+- [x] Create and inspect the six-page Word report and native Google Docs conversion.
+- [x] Write the manager demonstration and submission walkthrough.
 
 ## Remaining
 
-- [ ] Review relevance labels and answers independently.
-- [ ] Review repeated quotes and partly relevant secondary results.
-- [ ] Extend hard/no-answer cases, source-prompt tests, and repeated timings.
-- [ ] Review and finalize the technical report.
-- [ ] Prepare the Google Docs version and check reviewer access.
-- [ ] Check submission files/links and submit the repository URL.
+- [ ] Grant and verify manager access to the Google Docs report and repository.
+- [ ] Send the repository and Google Docs URLs to the manager.
+
+## Further work
+
+- Independent human review of relevance labels and answers.
+- Improve repeated quotes and partly relevant secondary results.
+- Extend hard/no-answer cases, source-prompt tests, and repeated timings.
+
+These are documented limitations and possible improvements. They are not claimed
+as completed work or as additional requirements from the assignment.
 
 ## Scope
 

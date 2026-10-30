@@ -7,7 +7,7 @@ Implementation choices, reasons, and current limitations for the notebook pipeli
 - Decision: build job retrieval with RAG, including both optional enhancements.
 - Reason: the assignment explicitly requests job search, and both hybrid search and reranking were selected for this project.
 - Scope: Python, FastAPI, vector retrieval plus BM25, Reciprocal Rank Fusion, a cross-encoder reranker, and an LLM response stage.
-- Current status: reusable retrieval, local LLM generation, and the local FastAPI interface are implemented; broader evaluation remains pending.
+- Current status: reusable retrieval, local LLM generation, and the local FastAPI interface are implemented. Later evaluation and setup records are in docs/evaluation.md, docs/api_evaluation.md, and docs/setup_verification.md.
 
 ## 2026-10-20: Repository organization
 
@@ -57,7 +57,7 @@ Reusable retrieval is now split into settings (`config.py`), tokenization/fusion
 pair scoring (`reranking.py`), and distinct-job orchestration (`pipeline.py`).
 Models are loaded once per pipeline instance and reused. Oversized queries or
 query/chunk pairs raise explicit errors instead of being silently truncated.
-Fifty-eight automated checks pass. A real GPU run against the saved collection
+At that refactoring checkpoint, 58 automated checks passed. A real GPU run against the saved collection
 reproduced notebook 04's top five distinct jobs and their evidence chunk IDs.
 This verifies the refactor's example behavior, not general retrieval quality.
 
@@ -73,7 +73,7 @@ remote-work eligibility.
 - Evaluation-driven refinements to candidate counts, fusion parameters, and job-level aggregation.
 - Reranker latency budget and model refinements.
 - Evaluation-driven prompt and response-schema refinements.
-- Labeled evaluation queries and acceptance criteria.
+- Independent relevance labels and broader acceptance criteria; the completed development queries are recorded in docs/evaluation.md.
 
 ## Package, ingestion, and answer interface
 

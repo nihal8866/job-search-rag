@@ -46,21 +46,38 @@ a lock prevents simultaneous inference. The response model documents and checks
 the evidence structure. Existing citation checks remain in the answer service.
 They establish valid references, not factual correctness.
 
-## Verification
+## Browser walkthrough
 
-The current 106-test suite includes 10 API tests using an injected service: successful
-responses, normalization, service reuse, malformed/invalid inputs, no matches,
-busy inference, sanitized failures, invalid service output, health/OpenAPI, and
-startup failures. These do not measure model quality. Real-model HTTP validation
-used a temporary Uvicorn server on 127.0.0.1:8765 with the actual saved index and
-cached models. Health, a two-job generated response, an empty location-filter
-result, and a blank-query 422 all passed. The generated query took about 55
-seconds after startup; the server was then stopped. This is one observed run,
-not a latency benchmark. Its text still incorrectly grouped Kafka and MQ as
-databases, illustrating why valid HTTP responses/citations do not establish
-semantic grounding. See the project checklist for the verification record.
+Open http://127.0.0.1:8000/docs after startup. Expand **POST /api/query**, click
+**Try it out**, replace the editable request body, and click **Execute**. The
+answer appears under **Response body**, followed by the job details and evidence.
+Replace placeholder values such as `"string"`; a literal location of `"string"`
+will normally match no jobs. The root URL has no homepage and returns 404.
 
-The server is intended for local use. Start one worker and avoid rebuilding the
-database while it runs. Stop it with Ctrl+C when finished. Labeled retrieval
-evaluation, broader grounding checks, and a fresh-environment installation are
-still required before final submission.
+The API is local to the computer running it. A manager can run the repository on
+their machine or view a screen-shared demonstration; your loopback URL does not
+give them remote access. See [submission walkthrough](submission.md).
+
+## Recorded examples and verification
+
+[API examples](api_examples.json) contains three complete request/response pairs
+copied from the actual October 29 development run: a Singapore job search, an
+unknown location, and an unsupported salary question. Results are observations;
+future model selections can vary.
+
+The current answer adapter uses local Qwen to select source lines and renders
+exact quotes with job-ID citations. It replaced earlier free-form output after
+that output overstated requirements and grouped messaging products as databases.
+Those earlier trials are retained in the evaluation records.
+
+All 106 automated tests passed in the working and fresh environments. The suite
+includes 10 API tests using injected services; these check HTTP behavior rather
+than model quality. Twelve actual API development requests also passed their
+applicable contract checks. They covered location filters, invalid inputs,
+Chinese/Japanese queries, unsupported facts, metadata, and one misleading user
+instruction. Relevant secondary evidence and repeated quotes remain limitations.
+See [API evaluation](api_evaluation.md) and [fresh setup](setup_verification.md)
+for exact scope and recorded timings. No general accuracy claim is made.
+
+Start one worker, avoid rebuilding the database while it runs, and stop the API
+with Ctrl+C when finished.

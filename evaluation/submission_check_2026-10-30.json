@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-30",
+  "scope": "Documentation and submission preparation; application code and model prompts unchanged.",
+  "checks": {
+    "google_doc_text_matches_word_after_whitespace_normalization": true,
+    "google_doc_eight_main_sections_and_four_by_five_results_table": true,
+    "word_and_google_pdf_six_pages_visually_inspected": true,
+    "google_docs_title_sanitizer_passed": true,
+    "word_author_metadata_blank": true,
+    "word_xml_credential_pattern_check_passed": true,
+    "three_example_pairs_match_recorded_requests_status_and_responses": true,
+    "report_json_blocks_parse_and_quotes_match_recorded_answer": true,
+    "local_markdown_links_verified": 27
+  },
+  "google_doc": {
+    "url": "https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit",
+    "native_mime_type_verified": "application/vnd.google-apps.document",
+    "permissions_observed": "One user owner permission; manager access not yet granted."
+  },
+  "sha256": {
+    "docs/report.md": "ab3869b8759f8be0309b42d90635cbf46257a89f07b5eb8a056c07cc0d5cdf6e",
+    "docs/job_search_rag_report.docx": "b0939e350d2cf64e6c18ec6be1605f2fc5ac39280caee0b025e6061cf648e8b2",
+    "docs/api_examples.json": "019f04b340fdc73046f53b1a03b725a06daeb079e0a34e44edb3597bd6df657d"
+  },
+  "remaining": [
+    "Manager access verification",
+    "User review and sending final submission links"
+  ],
+  "test_note": "No application changes. Prior recorded 106-test and fresh-install results remain applicable; heavy inference was not repeated for document edits."
+}

@@ -1,7 +1,15 @@
-# Job Search RAG — Technical report
+# Job Search RAG Technical Report
 
-Draft for submission. Technical checks are recorded below; independent relevance
-review, the Google Docs version, and reviewer-access checks are still pending.
+This project searches the supplied job listings and returns relevant jobs with
+quoted source evidence. It includes the required RAG pipeline and FastAPI endpoint,
+plus hybrid search and a cross-encoder reranker. All models run locally without a
+paid model API. The results below describe development checks; independent human
+relevance review remains future work.
+
+Repository: https://github.com/nihal8866/job-search-rag
+
+Report prepared October 30, 2026. Recorded model and environment checks were run
+on October 28 and 29, 2026.
 
 ## 1. Problem and data
 
@@ -17,6 +25,22 @@ contain characters in the checked CJK range; this is a character check, not full
 language detection.
 
 ## 2. Data preparation and search
+
+The offline path prepares a persistent index:
+
+```text
+Excel workbook -> HTML cleaning -> overlapping chunks
+              -> multilingual embeddings -> Chroma
+```
+
+The query path combines semantic and keyword matches:
+
+```text
+Question and optional location filter
+  -> vector search and BM25 -> RRF -> cross-encoder reranking
+  -> distinct jobs -> local Qwen evidence selection
+  -> checked source quotes and job ID citations
+```
 
 BeautifulSoup removes HTML while the original description and date strings are
 retained. Descriptions are split into 384-token windows with 48-token overlap.
@@ -44,6 +68,25 @@ candidate chunk per distinct job. This does not merge a job's full description.
 An explicit location filter restricts both retrievers before their result limits.
 It uses case-insensitive literal matching against recorded location strings.
 It does not infer geography, aliases, or remote eligibility from the question.
+
+### Reasons for the main choices
+
+Multilingual E5 supports a dataset containing English, Chinese, and Japanese
+text. Its small variant fits the available machine, and token-based chunking
+keeps long descriptions within its input limit. Overlap retains some context
+around boundaries, although it can repeat evidence and split sentences.
+
+Chroma provides a local persistent vector store without a hosted database.
+BM25 complements semantic retrieval with exact terms such as programming
+languages. Reciprocal Rank Fusion (RRF) combines rank positions instead of
+directly mixing incompatible vector and BM25 score scales. A cross-encoder
+examines each candidate together with the question, at a higher latency cost.
+The small evaluation below does not establish a general quality gain from it.
+
+Full locations remain in metadata and the BM25 corpus because long location
+lists exceeded the embedding budget. Filtering both retrievers before their
+candidate limits prevents an explicit location constraint from being applied
+only after relevant local candidates have already been discarded.
 
 ## 3. Local answers
 
@@ -91,6 +134,130 @@ return 422; busy or failed local inference returns 503; unexpected errors return
 500 without internal details. One service loads at startup and processes one
 inference at a time. GET /health checks retrieval readiness, not Ollama availability.
 The listener is bound to 127.0.0.1 for local review. See api_usage.md for examples.
+
+### Installation from the repository
+
+Install Python 3.10.11, Git, and Ollama first. The verified ingestion configuration
+uses an NVIDIA GPU and a compatible driver; CPU-only ingestion and other platforms
+have not been independently verified. Initial package and model downloads require
+internet access and several GB of free storage. The project has no paid API or
+hosting requirement; existing hardware, electricity, and connectivity are separate.
+
+Run in PowerShell:
+
+```powershell
+git clone https://github.com/nihal8866/job-search-rag.git
+cd job-search-rag
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip --isolated install --index-url https://pypi.org/simple -r requirements-dev.txt
+python -m pip --isolated install --no-build-isolation --no-deps -e .
+python -m pip check
+job-rag ingest
+```
+
+The first two lines download the repository and enter its folder. The next two
+create and activate an isolated Python environment. The two install commands
+install the recorded dependencies and make the local package available as
+job-rag. pip check verifies dependency consistency. The final command cleans
+the supplied workbook, generates embeddings, and builds the local index.
+Generated indexes and embeddings are recreated locally and are not in Git.
+
+Download the selected local answer model once:
+
+```powershell
+ollama pull qwen3:4b-instruct-2507-q4_K_M
+```
+
+Quit any already running Ollama tray app before starting a manually configured
+server. In a separate PowerShell terminal, run:
+
+```powershell
+$env:OLLAMA_NO_CLOUD = "1"
+ollama serve
+```
+
+The first line disables Ollama cloud features for this terminal's server process.
+The second starts the local model server; leave that terminal running. Do not
+start a second server if one is already serving on port 11434.
+
+In the activated project terminal, start the API:
+
+```powershell
+python -m uvicorn job_rag.api:app --host 127.0.0.1 --port 8000 --workers 1
+```
+
+This loads the FastAPI application with one worker, listening only on this
+computer. After startup completes, open http://127.0.0.1:8000/docs. Expand
+POST /api/query, click Try it out, replace the example request, and click Execute.
+Read the JSON under Response body. The root URL has no homepage and returns 404.
+This local URL cannot be used by a reviewer on a different computer.
+
+### Recorded requests and responses
+
+The following examples come from the actual October 29 API run. The first response
+is a projection showing only selected fields; the complete responses, source
+chunks, metadata, and scores are retained in docs/api_examples.json and
+evaluation/api_results_2026-10-29.json. Model selections and timings can vary
+between runs; the examples are observations, not exact-output guarantees.
+
+Example request with a location filter:
+
+```json
+{
+  "query": "Python backend developer working with databases",
+  "location": "sInGaPoRe",
+  "top_k": 2
+}
+```
+
+Observed HTTP 200 response fields:
+
+```json
+{
+  "query": "Python backend developer working with databases",
+  "location_filter": "sInGaPoRe",
+  "cited_job_ids": ["LF0247", "LF0175"]
+}
+```
+
+The first result was Backend Software Engineer - Global E-commerce (Governance
+Service), TikTok, Singapore, job LF0247. Its answer included these exact lines:
+
+> - Candidate should have at least 5 years of experience in developing highly scalable backend services and systems using at least one of the following programming languages: Java, Golang, or Python.
+> - In-depth knowledge of common databases and messaging frameworks such as MySQL, Redis, Kafka, and MQ is required.
+
+The second result was Solutions Engineer, TikTok Ads, job LF0175. Its selected
+evidence supported only part of the question. This distinction matters: the API
+returns ranked evidence, not a guarantee that every result meets every condition.
+
+Example request with an unknown location:
+
+```json
+{
+  "query": "Python developer",
+  "location": "NO_SUCH_LOCATION_000",
+  "top_k": 2
+}
+```
+
+Observed complete HTTP 200 response:
+
+```json
+{
+  "query": "Python developer",
+  "location_filter": "NO_SUCH_LOCATION_000",
+  "answer": "No jobs were retrieved for the requested search and filters.",
+  "cited_job_ids": [],
+  "jobs": []
+}
+```
+
+For a missing-fact check, the question "What is the exact annual salary for the
+EPAM Senior Python Developer?" with location Brezno and top_k 1 returned HTTP 200
+with LF0265 and the answer "An answer is not established by the selected evidence
+for this job [LF0265]." Blank questions, blank locations, and top_k above 5 returned
+HTTP 422 in the recorded validation cases.
 
 ## 5. Evaluation
 
@@ -160,5 +327,16 @@ The supplied workbook is the source of job information. The assignment's isolate
 diabetes-classification sentence is treated as a copy-paste error; the implementation
 follows its job-RAG requirements. Both optional enhancements are included.
 
-Code, notebooks, tests, and verification notes are in the repository. Final report
-review, the required Google Docs version, and reviewer access are still pending.
+The source workbook is the supplied assignment input and is kept in the repository.
+Missing metadata is not invented. Scores are ranking signals rather than match
+probabilities. Publication dates describe historical records rather than live
+vacancy status. The local interface is intended for one reviewer at a time.
+
+The repository contains code, notebooks, tests, the source workbook, dependency
+records, and this report. The accompanying Word document is prepared for import
+into Google Docs. The submission consists of the GitHub repository URL and the
+Google Docs report URL after conversion and reviewer-access verification.
+
+Detailed supporting records are in docs/decisions.md, docs/answer_design.md,
+docs/evaluation.md, docs/api_evaluation.md, and docs/setup_verification.md.
+The manager walkthrough and final handoff checklist are in docs/submission.md.
