@@ -1,4 +1,6 @@
-# Job Search RAG Technical Report
+# Job Search RAG
+
+Technical Report
 
 GenAI Takeaway Assignment
 
@@ -8,6 +10,7 @@ Repository: https://github.com/nihal8866/job-search-rag
 
 ## Table of Contents
 
+- [Introduction](#introduction)
 - [1. Problem and data](#1-problem-and-data)
 - [2. Data preparation and search](#2-data-preparation-and-search)
   - [Reasons for the main choices](#reasons-for-the-main-choices)
@@ -24,6 +27,8 @@ Repository: https://github.com/nihal8866/job-search-rag
 
 - Fig 1: Data Preparation Pipeline
 - Fig 2: Question Answering Pipeline
+
+## Introduction
 
 This project searches the supplied job listings and returns relevant jobs with
 quoted source evidence. It includes the required RAG pipeline and FastAPI endpoint,
