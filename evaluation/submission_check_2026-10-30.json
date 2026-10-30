@@ -24,7 +24,7 @@
     "permissions_observed": "One user owner permission; manager access not yet granted."
   },
   "sha256": {
-    "docs/report.md": "99a36a117aa41a837967598e43f24fea26d018740c71ca1ead07b3a398e9f139",
+    "docs/report.md": "4a097e7f11716578b67c04338f5140677d3407d3726bb3283b5ffefaa59bbf3e",
     "docs/job_search_rag_report.docx": "887113aee6a06fa07ffd2d2aed5a469f21debd6a1b9f42eecc8242f11adeb5f7",
     "docs/api_examples.json": "019f04b340fdc73046f53b1a03b725a06daeb079e0a34e44edb3597bd6df657d",
     "docs/figures/data_preparation.png": "bee9d359fa616962f271729952bb45a4a6448de10a17749c5b1710662c109c6b",

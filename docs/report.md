@@ -91,7 +91,7 @@ An explicit location filter restricts both retrievers before their result limits
 It uses case-insensitive literal matching against recorded location strings.
 It does not infer geography, aliases, or remote eligibility from the question.
 
-### Reasons for the main choices
+### 2.1 Technology decisions
 
 | Component | Choice | Reason |
 | --- | --- | --- |
@@ -179,7 +179,7 @@ return 422; busy or failed local inference returns 503; unexpected errors return
 inference at a time. GET /health checks retrieval readiness, not Ollama availability.
 The listener is bound to 127.0.0.1 for local review. See api_usage.md for examples.
 
-### Installation from the repository
+### 4.2 Installation from the repository
 
 Install Python 3.10.11, Git, and Ollama first. The verified ingestion configuration
 uses an NVIDIA GPU and a compatible driver; CPU-only ingestion and other platforms
@@ -237,7 +237,7 @@ POST /api/query, click Try it out, replace the example request, and click Execut
 Read the JSON under Response body. The root URL has no homepage and returns 404.
 This local URL cannot be used by a reviewer on a different computer.
 
-### Recorded requests and responses
+### 4.3 Recorded requests and responses
 
 The following examples come from recorded API requests. The first response is a projection showing only selected fields; the complete responses, source chunks, metadata, and scores are retained in docs/api_examples.json and evaluation/api_results_2026-10-29.json. Model selections and timings can vary between runs; the examples are observations, not exact-output guarantees.
 
