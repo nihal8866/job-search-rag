@@ -205,10 +205,12 @@ See the [technical report](docs/report.md), [decisions](docs/decisions.md),
 The [manager walkthrough](docs/submission.md) explains how to review and test the
 project. The [Google Docs report](https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit)
 and editable [Word copy](docs/job_search_rag_report.docx) are ready. Both use
-Times New Roman, 12-point black body text, and 1.5 line spacing. The eleven-page layout
+Times New Roman, 12-point black body text, and 1.5 line spacing. The fifteen-page layout
 was inspected; the report currently has owner-only access.
 It includes flowcharts for data preparation and question answering, with figure
 files and editable SVG sources in `docs/figures/`.
 The report opens with a title page and contents with checked page numbers; both
 flowcharts have numbered captions and appear in the list of figures.
+Dataset and technology tables, a recorded question walkthrough, and a manager quick-start
+guide explain the implementation and how to review its answers.
 Manager access must be granted and checked before submission.

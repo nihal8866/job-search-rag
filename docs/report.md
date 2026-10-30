@@ -11,17 +11,19 @@ Repository: https://github.com/nihal8866/job-search-rag
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [1. Problem and data](#1-problem-and-data)
-- [2. Data preparation and search](#2-data-preparation-and-search)
-  - [Reasons for the main choices](#reasons-for-the-main-choices)
-- [3. Local answers](#3-local-answers)
-- [4. Setup and API](#4-setup-and-api)
-  - [Installation from the repository](#installation-from-the-repository)
-  - [Recorded requests and responses](#recorded-requests-and-responses)
-- [5. Evaluation](#5-evaluation)
-- [6. Reproducibility](#6-reproducibility)
-- [7. Limitations and further work](#7-limitations-and-further-work)
-- [8. Assumptions and submission](#8-assumptions-and-submission)
+- [1 Problem and data](#1-problem-and-data)
+- [2 Data preparation and search](#2-data-preparation-and-search)
+- [2.1 Technology decisions](#21-technology-decisions)
+- [3 Local answers](#3-local-answers)
+- [4 Setup and API](#4-setup-and-api)
+- [4.1 Manager quick start](#41-manager-quick-start)
+- [4.2 Installation from the repository](#42-installation-from-the-repository)
+- [4.3 Recorded requests and responses](#43-recorded-requests-and-responses)
+- [4.4 Worked question and answer](#44-worked-question-and-answer)
+- [5 Evaluation](#5-evaluation)
+- [6 Reproducibility](#6-reproducibility)
+- [7 Limitations and further work](#7-limitations-and-further-work)
+- [8 Assumptions and submission](#8-assumptions-and-submission)
 
 ## List of Figures
 
@@ -30,28 +32,27 @@ Repository: https://github.com/nihal8866/job-search-rag
 
 ## Introduction
 
-This project searches the supplied job listings and returns relevant jobs with
-quoted source evidence. It includes the required RAG pipeline and FastAPI endpoint,
-plus hybrid search and a cross-encoder reranker. All models run locally without a
-paid model API. The results below describe development checks; independent human
-relevance review remains future work.
+This project searches the supplied job listings and returns relevant jobs with quoted source evidence. It includes the required RAG pipeline and FastAPI endpoint, plus hybrid search and a cross-encoder reranker. All models run locally without a paid model API. The system passed the development checks described below. A separate human review of search relevance has not yet been completed.
 
 ## 1. Problem and data
 
-The goal is to search the supplied job listings and answer questions using their
-source evidence. The input is data/raw/LF Jobs.xlsx: 1,000 listings, nine columns,
-145 companies, and seven job categories. Descriptions contain HTML.
+The goal is to search the supplied job listings and answer questions using their source evidence. The source workbook is data/raw/LF Jobs.xlsx. The table below summarizes the dataset and the resulting search index.
 
-There are nine missing locations, 880 missing tag values, and no repeated job IDs
-or fully duplicated rows. All descriptions remain nonempty after cleaning. All
-publication dates parse as UTC and range from February 1, 2023 to August 1, 2025.
-These dates do not confirm whether a vacancy is still open. Eleven descriptions
-contain characters in the checked CJK range; this is a character check, not full
-language detection.
+| Measure | Finding |
+| --- | --- |
+| Job listings | 1,000 across 145 companies and seven categories |
+| Source fields | Nine columns in the supplied workbook |
+| Missing metadata | Nine locations and 880 tag values |
+| Duplicate records | Zero repeated IDs and zero fully duplicated rows |
+| Cleaned descriptions | 1,000 nonempty descriptions |
+| Search chunks | 3,618; 384-token windows with 48-token overlap |
+| Embedding array | 3,618 vectors with 384 dimensions each |
+
+Descriptions contain HTML and remain nonempty after cleaning. Publication dates parse as UTC and range from February 1, 2023 to August 1, 2025. These dates do not confirm whether a vacancy is still open. Eleven descriptions contain characters in the checked CJK range; this is a character check, not full language detection.
 
 ## 2. Data preparation and search
 
-The offline path prepares a persistent index:
+The following pipeline processes the job dataset and stores it in a reusable search index:
 
 ![Data preparation flowchart](figures/data_preparation.png)
 
@@ -92,17 +93,19 @@ It does not infer geography, aliases, or remote eligibility from the question.
 
 ### Reasons for the main choices
 
-Multilingual E5 supports a dataset containing English, Chinese, and Japanese
-text. Its small variant fits the available machine, and token-based chunking
-keeps long descriptions within its input limit. Overlap retains some context
-around boundaries, although it can repeat evidence and split sentences.
+| Component | Choice | Reason |
+| --- | --- | --- |
+| Embeddings | Multilingual E5 small | Supports multilingual text and fits the available machine. |
+| Vector storage | Chroma | Saves vectors and source metadata locally for reuse. |
+| Keyword retrieval | BM25 | Adds exact-term matches, including programming languages and locations. |
+| Rank fusion | RRF with k=60 | Combines the two rankings without mixing score scales. |
+| Reranking | BGE reranker v2 m3 | Scores each question and candidate together before selecting distinct jobs. |
+| Local answers | Qwen 3 4B through Ollama | Selects evidence locally without a paid model API. |
+| Review interface | FastAPI | Provides a validated endpoint and an interactive question interface. |
 
-Chroma provides a local persistent vector store without a hosted database.
-BM25 complements semantic retrieval with exact terms such as programming
-languages. Reciprocal Rank Fusion (RRF) combines rank positions instead of
-directly mixing incompatible vector and BM25 score scales. A cross-encoder
-examines each candidate together with the question, at a higher latency cost.
-The small evaluation below does not establish a general quality gain from it.
+Multilingual E5 supports the dataset’s English, Chinese, and Japanese text. Token-based chunking keeps descriptions within the model’s input limit. The 48-token overlap retains context around chunk boundaries, although it can repeat evidence and split sentences.
+
+RRF combines rank positions rather than directly mixing vector and BM25 scores, which use different scales. Reranking adds a closer comparison between the question and each candidate, at a higher latency cost. The development evaluation does not establish a general quality gain from either enhancement.
 
 Full locations remain in metadata and the BM25 corpus because long location
 lists exceeded the embedding budget. Filtering both retrievers before their
@@ -136,6 +139,26 @@ The README contains installation and startup commands. job-rag ingest prepares
 the data/index; search returns ranked evidence; ask adds the local answer step.
 The original workbook is unchanged. If ingestion is interrupted, it must be rerun
 because files and database updates are not one transaction.
+
+### 4.1 Manager quick start
+
+After completing the installation and ingestion steps below, use the following steps to review the running application.
+
+1. Keep the local Ollama server running with the selected Qwen model installed.
+
+2. In the activated project terminal, start the API with the command below.
+
+python -m uvicorn job_rag.api:app --host 127.0.0.1 --port 8000 --workers 1
+
+3. Wait for Application startup complete, then open http://127.0.0.1:8000/docs on the same computer.
+
+4. Expand POST /api/query, click Try it out, enter the example JSON below, and click Execute.
+
+5. Read answer and cited_job_ids under Response body. Expand jobs to compare each answer with its evidence and source_chunk_id.
+
+6. Try an unknown location or ask for a salary absent from the evidence to check how the system handles missing information.
+
+The local address works only on the computer running the API. A reviewer using another computer must install the project there or view a demonstration on the existing laptop.
 
 POST /api/query accepts:
 
@@ -216,11 +239,19 @@ This local URL cannot be used by a reviewer on a different computer.
 
 ### Recorded requests and responses
 
-The following examples come from the actual October 29 API run. The first response
-is a projection showing only selected fields; the complete responses, source
-chunks, metadata, and scores are retained in docs/api_examples.json and
-evaluation/api_results_2026-10-29.json. Model selections and timings can vary
-between runs; the examples are observations, not exact-output guarantees.
+The following examples come from recorded API requests. The first response is a projection showing only selected fields; the complete responses, source chunks, metadata, and scores are retained in docs/api_examples.json and evaluation/api_results_2026-10-29.json. Model selections and timings can vary between runs; the examples are observations, not exact-output guarantees.
+
+### 4.4 Worked question and answer
+
+This recorded request shows how a question becomes a ranked answer with inspectable source evidence. The table follows the request through the main stages; the response and quoted lines below show the observed output.
+
+| Stage | What happened in this example |
+| --- | --- |
+| Question and filter | The user asked for Python backend work with databases and supplied Singapore as the location. |
+| Candidate retrieval | The location filter restricted both vector and BM25 retrieval before their candidate limits. |
+| Ranking | RRF combined the candidate rankings. The reranker then ordered candidates, retaining the best chunk for each distinct job. |
+| Returned evidence | LF0247 ranked first with chunk LF0247_chunk_001. LF0175 ranked second with chunk LF0175_chunk_001. |
+| Answer construction | The local model selected source lines. Application checks copied those lines into the answer and attached the job IDs. |
 
 Example request with a location filter:
 
@@ -282,6 +313,16 @@ HTTP 422 in the recorded validation cases.
 
 ## 5. Evaluation
 
+The checks below separate software behavior from search relevance. Passing the technical checks does not establish that every recommended job satisfies every part of a question.
+
+| Check | Recorded result | What it establishes |
+| --- | --- | --- |
+| Automated tests | 106 passed | Expected behavior for the tested code paths; model and database calls are mocked in unit tests. |
+| Known target retrieval | Eight of eight targets in the top five for all three methods | Recovery of selected known jobs in eight development cases. |
+| Fixed evidence answers | Five cases passed reference checks | Source selection and supported abstentions for the fixed inputs. |
+| Live API | 12 cases; applicable contract checks passed | Observed HTTP behavior, filters, citations, and unsupported-fact handling. |
+| Independent relevance review | Not yet completed | Broad relevance and accuracy remain unmeasured. |
+
 Eight assistant-curated, source-derived queries test whether a known target job
 is found. They cover six categories and include a Chinese query. These are
 development cases, not independent labels or a held-out set. Other jobs remain
@@ -316,9 +357,7 @@ limits are retained in evaluation/ and described in evaluation.md/api_evaluation
 
 ## 6. Reproducibility
 
-All four notebooks completed in separate fresh kernels on October 28. On October
-29, a new Python 3.10.11 environment with no system site-packages installed the
-development requirements and editable package. pip check and all 106 tests passed.
+All four notebooks ran successfully in separate, freshly started kernels. The development requirements and project package were also installed in a clean Python 3.10.11 virtual environment without access to system-wide packages. Running pip check found no dependency conflicts, and all 106 tests passed.
 
 A separate source snapshot rebuilt 1,000 jobs, 3,618 chunks, normalized vectors,
 and Chroma records. IDs, text, and embedding inputs matched working artifacts;
@@ -344,9 +383,7 @@ Current checks do not establish production throughput or broad adversarial robus
 
 ## 8. Assumptions and submission
 
-The supplied workbook is the source of job information. The assignment's isolated
-diabetes-classification sentence is treated as a copy-paste error; the implementation
-follows its job-RAG requirements. Both optional enhancements are included.
+The supplied workbook is the source of job information. The implementation follows the assignment’s job-search RAG requirements and includes both optional enhancements: hybrid search and a reranker model.
 
 The source workbook is the supplied assignment input and is kept in the repository.
 Missing metadata is not invented. Scores are ranking signals rather than match
