@@ -8,9 +8,6 @@ relevance review remains future work.
 
 Repository: https://github.com/nihal8866/job-search-rag
 
-Report prepared October 30, 2026. Recorded model and environment checks were run
-on October 28 and 29, 2026.
-
 ## 1. Problem and data
 
 The goal is to search the supplied job listings and answer questions using their
