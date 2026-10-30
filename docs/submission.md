@@ -11,8 +11,9 @@ documentation page provides the question-and-answer interface.
 - Recorded [request and response examples](api_examples.json).
 - [Google Docs report](https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit).
 
-The native Google Doc was imported from the Word file on October 30. All six
-converted pages were inspected, including headings, code, and the results table.
+The native Google Doc was imported from the Word file on October 30. Both copies
+use Times New Roman, 12-point black text, and 1.5 line spacing. All nine pages
+were inspected, including headings, code, and the results table.
 Its permissions currently show owner-only access. Manager access is still pending.
 Keep the report copies consistent if the text changes.
 

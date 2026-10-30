@@ -204,6 +204,7 @@ See the [technical report](docs/report.md), [decisions](docs/decisions.md),
 [checklist](docs/project_plan.md), and [assignment](docs/GenAI_Takeaway_Assignment.pdf).
 The [manager walkthrough](docs/submission.md) explains how to review and test the
 project. The [Google Docs report](https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit)
-and editable [Word copy](docs/job_search_rag_report.docx) are ready. The six-page
-Google Docs conversion was inspected; the report currently has owner-only access.
+and editable [Word copy](docs/job_search_rag_report.docx) are ready. Both use
+Times New Roman, 12-point black text, and 1.5 line spacing. The nine-page layout
+was inspected; the report currently has owner-only access.
 Manager access must be granted and checked before submission.

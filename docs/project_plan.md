@@ -18,7 +18,7 @@
 - [x] Rebuild artifacts and test a real API query in a fresh environment.
 - [x] Add setup instructions, API examples, and credential-pattern checks.
 - [x] Finalize report content against the assignment and include recorded responses.
-- [x] Create and inspect the six-page Word report and native Google Docs conversion.
+- [x] Create and inspect the Word report and native Google Docs conversion, including the nine-page Times New Roman revision.
 - [x] Write the manager demonstration and submission walkthrough.
 
 ## Remaining
