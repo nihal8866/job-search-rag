@@ -207,4 +207,6 @@ project. The [Google Docs report](https://docs.google.com/document/d/14eDGQY6v6J
 and editable [Word copy](docs/job_search_rag_report.docx) are ready. Both use
 Times New Roman, 12-point black text, and 1.5 line spacing. The nine-page layout
 was inspected; the report currently has owner-only access.
+It includes flowcharts for data preparation and question answering, with figure
+files and editable SVG sources in `docs/figures/`.
 Manager access must be granted and checked before submission.

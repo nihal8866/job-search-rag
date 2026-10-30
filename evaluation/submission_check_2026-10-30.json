@@ -7,12 +7,14 @@
     "word_and_google_pdf_nine_pages_visually_inspected": true,
     "report_format": "Times New Roman, 12 pt, 1.5 line spacing, black text including links",
     "formatting_revision_preserves_wording_after_whitespace_normalization": true,
+    "two_flowcharts_embedded_and_match_source_png_files": true,
+    "non_diagram_report_text_preserved_when_replacing_text_arrows": true,
     "google_docs_title_sanitizer_passed": true,
     "word_author_metadata_blank": true,
     "word_xml_credential_pattern_check_passed": true,
     "three_example_pairs_match_recorded_requests_status_and_responses": true,
     "report_json_blocks_parse_and_quotes_match_recorded_answer": true,
-    "local_markdown_links_verified": 27
+    "local_markdown_links_verified": 29
   },
   "google_doc": {
     "url": "https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit",
@@ -20,9 +22,13 @@
     "permissions_observed": "One user owner permission; manager access not yet granted."
   },
   "sha256": {
-    "docs/report.md": "7038d5c17eab0a439b4dae0db596b4289d9b52a8c5fdf0da45e267b897abfe5b",
-    "docs/job_search_rag_report.docx": "62be2f232d7ce7d9fcaf31fd10ce9827f4a92ce61c82fde97a83dbf86297aabb",
-    "docs/api_examples.json": "019f04b340fdc73046f53b1a03b725a06daeb079e0a34e44edb3597bd6df657d"
+    "docs/report.md": "49fc6c9a1693427b4fa975a2089033efc88b8938b097b45350047295ed3832c3",
+    "docs/job_search_rag_report.docx": "f1fafdafe73fcd38326ab6bedaf1221a713d6db875a53f5c17522d0d10af555a",
+    "docs/api_examples.json": "019f04b340fdc73046f53b1a03b725a06daeb079e0a34e44edb3597bd6df657d",
+    "docs/figures/data_preparation.png": "bee9d359fa616962f271729952bb45a4a6448de10a17749c5b1710662c109c6b",
+    "docs/figures/data_preparation.svg": "2b453c2a843f3c9c7cd18b35dc7d5e07c8ea5b0ec1eac2854acc172cee5cfab6",
+    "docs/figures/question_answering.png": "a9e9cb09afcc24bb26f0d6f4c4e8bd0e512121b27c26570ea3be492513301eee",
+    "docs/figures/question_answering.svg": "de053b54b195edf2fb00952dc1928a00205020adc2cde277e442a450b4094251"
   },
   "remaining": [
     "Manager access verification",

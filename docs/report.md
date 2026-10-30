@@ -25,19 +25,11 @@ language detection.
 
 The offline path prepares a persistent index:
 
-```text
-Excel workbook -> HTML cleaning -> overlapping chunks
-              -> multilingual embeddings -> Chroma
-```
+![Data preparation flowchart](figures/data_preparation.png)
 
 The query path combines semantic and keyword matches:
 
-```text
-Question and optional location filter
-  -> vector search and BM25 -> RRF -> cross-encoder reranking
-  -> distinct jobs -> local Qwen evidence selection
-  -> checked source quotes and job ID citations
-```
+![Question answering flowchart](figures/question_answering.png)
 
 BeautifulSoup removes HTML while the original description and date strings are
 retained. Descriptions are split into 384-token windows with 48-token overlap.
