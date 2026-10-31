@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-31",
+  "scope": "Synchronize the Word report with manual formatting changes in the existing Google Doc; application code and Markdown wording unchanged.",
+  "source_google_doc": "https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit",
+  "checks": {
+    "word_content_matches_current_google_doc": true,
+    "markdown_body_headings_tables_code_and_quotes_match_google_doc": true,
+    "word_and_google_pdf_pages": 15,
+    "word_pages_visually_inspected": 15,
+    "contents_and_figure_page_references_verified": true,
+    "native_tables": 5,
+    "inline_figures": 2,
+    "word_author_and_last_modified_by_metadata_blank": true,
+    "word_xml_secret_pattern_check_passed": true,
+    "google_docs_title_sanitizer_passed": true
+  },
+  "export_notes": "Google Docs resampled the two embedded figure images during Word export. Original PNG and editable SVG figure sources remain unchanged in docs/figures. One export-generated title paragraph border was removed.",
+  "sha256": {
+    "docs/report.md": "4a097e7f11716578b67c04338f5140677d3407d3726bb3283b5ffefaa59bbf3e",
+    "docs/job_search_rag_report.docx": "789ac2ee35a0a8f906e188805101ad4ca862bf3cefafdb9e64b435e9c5fee063"
+  },
+  "test_note": "Documentation formatting only; application tests and model inference were not repeated."
+}
