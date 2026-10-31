@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-31",
+  "scope": "Technology table pagination only; report wording and application code unchanged.",
+  "change": "Single-space the technology table and use 3-point vertical cell padding at the existing 12-point font size so its heading and all seven data rows fit on page five without a forced page break.",
+  "checks": {
+    "word_and_google_docs_pages": 13,
+    "full_technology_table_on_page_five_in_both_copies": true,
+    "no_orphan_technology_row_on_page_six": true,
+    "body_wording_preserved": true,
+    "word_and_google_docs_body_text_match": true,
+    "markdown_unchanged_from_verified_spacing_revision": true,
+    "contents_and_figure_page_references_verified": true,
+    "five_tables_and_two_figures_preserved": true,
+    "metadata_and_xml_secret_checks_passed": true
+  },
+  "contents_pages": {
+    "word": {
+      "Introduction": 3,
+      "1 Problem and data": 3,
+      "2 Data preparation and search": 4,
+      "2.1 Technology decisions": 5,
+      "3 Local answers": 6,
+      "4 Setup and API": 6,
+      "4.1 Manager quick start": 7,
+      "4.2 Installation from the repository": 7,
+      "4.3 Recorded requests and responses": 9,
+      "4.4 Worked question and answer": 9,
+      "5 Evaluation": 10,
+      "6 Reproducibility": 12,
+      "7 Limitations and further work": 12,
+      "8 Assumptions and submission": 13,
+      "Fig 1: Data Preparation Pipeline": 4,
+      "Fig 2: Question Answering Pipeline": 4
+    },
+    "google_docs": {
+      "Introduction": 3,
+      "1 Problem and data": 3,
+      "2 Data preparation and search": 4,
+      "2.1 Technology decisions": 5,
+      "3 Local answers": 6,
+      "4 Setup and API": 6,
+      "4.1 Manager quick start": 7,
+      "4.2 Installation from the repository": 7,
+      "4.3 Recorded requests and responses": 9,
+      "4.4 Worked question and answer": 9,
+      "5 Evaluation": 10,
+      "6 Reproducibility": 12,
+      "7 Limitations and further work": 12,
+      "8 Assumptions and submission": 13,
+      "Fig 1: Data Preparation Pipeline": 4,
+      "Fig 2: Question Answering Pipeline": 4
+    }
+  },
+  "sha256": {
+    "docs/report.md": "4a097e7f11716578b67c04338f5140677d3407d3726bb3283b5ffefaa59bbf3e",
+    "docs/job_search_rag_report.docx": "3cc863fb52f1d239a7ad12ac2eaf32821bed84ad423a9479b99b8f43bb312afd"
+  },
+  "test_note": "Formatting only; application tests and model inference were not repeated."
+}
