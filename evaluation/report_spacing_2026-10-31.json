@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-31",
+  "scope": "Report spacing and pagination only; wording, application code, and model prompts unchanged.",
+  "google_doc": "https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit",
+  "pages_before": 15,
+  "pages_after": {
+    "word": 13,
+    "google_docs": 13
+  },
+  "changes": [
+    "Removed forced body section page breaks; retained separate title and contents pages.",
+    "Reduced blank paragraph spacing.",
+    "Kept headings with the following text and figure captions with their images.",
+    "Used 1.5 body spacing, 1.15 table spacing, and single-spaced command and JSON examples.",
+    "Prevented table rows splitting across pages and repeated table headers.",
+    "Checked contents references separately for Word and Google Docs pagination."
+  ],
+  "checks": {
+    "body_text_preserved": true,
+    "markdown_body_matches": true,
+    "google_and_word_body_text_match": true,
+    "all_word_pages_visually_reviewed": true,
+    "contents_and_figure_page_references_verified": true,
+    "five_tables_and_two_figures_preserved": true,
+    "word_metadata_and_xml_secret_checks_passed": true,
+    "title_sanitizer_passed": true
+  },
+  "contents_pages": {
+    "word": {
+      "Introduction": 3,
+      "1 Problem and data": 3,
+      "2 Data preparation and search": 4,
+      "2.1 Technology decisions": 5,
+      "3 Local answers": 6,
+      "4 Setup and API": 6,
+      "4.1 Manager quick start": 7,
+      "4.2 Installation from the repository": 7,
+      "4.3 Recorded requests and responses": 9,
+      "4.4 Worked question and answer": 9,
+      "5 Evaluation": 10,
+      "6 Reproducibility": 12,
+      "7 Limitations and further work": 12,
+      "8 Assumptions and submission": 13,
+      "Fig 1: Data Preparation Pipeline": 4,
+      "Fig 2: Question Answering Pipeline": 4
+    },
+    "google_docs": {
+      "Introduction": 3,
+      "1 Problem and data": 3,
+      "2 Data preparation and search": 4,
+      "2.1 Technology decisions": 5,
+      "3 Local answers": 6,
+      "4 Setup and API": 6,
+      "4.1 Manager quick start": 7,
+      "4.2 Installation from the repository": 8,
+      "4.3 Recorded requests and responses": 9,
+      "4.4 Worked question and answer": 9,
+      "5 Evaluation": 11,
+      "6 Reproducibility": 12,
+      "7 Limitations and further work": 12,
+      "8 Assumptions and submission": 13,
+      "Fig 1: Data Preparation Pipeline": 4,
+      "Fig 2: Question Answering Pipeline": 4
+    }
+  },
+  "sha256": {
+    "docs/report.md": "4a097e7f11716578b67c04338f5140677d3407d3726bb3283b5ffefaa59bbf3e",
+    "docs/job_search_rag_report.docx": "fdee3d3409cad5166de2109637a92225a731c49cda6d8c4009363504b339c2cc"
+  },
+  "test_note": "Formatting only; application tests and model inference were not repeated."
+}

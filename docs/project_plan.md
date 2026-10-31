@@ -18,7 +18,7 @@
 - [x] Rebuild artifacts and test a real API query in a fresh environment.
 - [x] Add setup instructions, API examples, and credential-pattern checks.
 - [x] Finalize report content against the assignment and include recorded responses.
-- [x] Create and inspect the fifteen-page Word and Google Docs reports with title page, contents, numbered figures, summary tables, a worked example, and manager quick-start instructions.
+- [x] Create and inspect the thirteen-page Word and Google Docs reports with title page, contents, numbered figures, summary tables, a worked example, and manager quick-start instructions.
 - [x] Write the manager demonstration and submission walkthrough.
 
 ## Remaining

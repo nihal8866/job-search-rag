@@ -12,7 +12,9 @@ documentation page provides the question-and-answer interface.
 - [Google Docs report](https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit).
 
 The native Google Doc was imported from the Word file on October 30. Both copies
-use Times New Roman, 12-point black body text, and 1.5 line spacing. All fifteen pages
+use Times New Roman, 12-point black body text, and 1.5 body line spacing. Tables and
+command examples use tighter spacing, and sections flow without forced page breaks.
+All thirteen pages
 were inspected, including headings, code, and the tables.
 The report includes a title page, a table of contents with checked page numbers,
 and a list of figures matching the two flowchart captions. Contents page numbers
