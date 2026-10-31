@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-31",
+  "scope": "Verify the public review links requested by the user; application hosting unchanged.",
+  "github": {
+    "url": "https://github.com/nihal8866/job-search-rag",
+    "visibility": "public",
+    "verification": "Repository metadata returned visibility public."
+  },
+  "google_doc": {
+    "url": "https://docs.google.com/document/d/14eDGQY6v6J13eL8WvSqqfh6yqrWuenemxUIjX3jOcuc/edit",
+    "permission_type": "anyone",
+    "permission_role": "reader",
+    "allow_file_discovery": false,
+    "anonymous_browser_access_verified": true,
+    "public_editing_enabled": false
+  },
+  "remaining": [
+    "Send both links to the manager through the agreed submission channel.",
+    "Obtain the manager's acknowledgement or review."
+  ]
+}

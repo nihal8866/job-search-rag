@@ -23,7 +23,7 @@
 
 ## Remaining
 
-- [ ] Grant and verify manager access to the Google Docs report and repository.
+- [x] Verify public repository visibility and view-only Google Docs link access for submission.
 - [ ] Send the repository and Google Docs URLs to the manager.
 
 ## Further work

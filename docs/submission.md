@@ -19,7 +19,9 @@ were inspected, including headings, code, and the tables.
 The report includes a title page, a table of contents with checked page numbers,
 and a list of figures matching the two flowchart captions. Contents page numbers
 are fixed for this version and should be rechecked after layout changes.
-Its permissions currently show owner-only access. Manager access is still pending.
+The repository is public. The report allows anyone with the link to view it;
+public editing is disabled, and the report is not discoverable through Drive search.
+The report link was checked without signing in. The manager has not yet confirmed review.
 Keep the report copies consistent if the text changes.
 The report includes dataset and technology decisions tables, a recorded question
 walkthrough, a validation summary, and a manager quick-start guide.
@@ -104,14 +106,14 @@ audit and does not inspect binary/image contents.
 
 ## Google Docs and access
 
-The Google Docs conversion is complete. Retain restricted access unless the
-assignment requires broader sharing. Give the manager Viewer access using their
-confirmed account and verify that they can open it. Do not put credentials,
-personal environment files, private keys, or logs into the report or repository.
+The Google Docs report is currently viewable by anyone with its link, and the
+GitHub repository is public, as requested for submission. The report's public
+permission is Viewer. It does not permit public editing or Drive search discovery.
+The report was opened without signing in to verify link access.
 
-If the repository is private, invite the manager's confirmed GitHub account.
-Verify access with the manager; being able to open a link in the owner's account
-does not prove that the reviewer can open it.
+If access is restricted again later, add the manager's confirmed accounts and
+verify access before resending the links. Keep credentials, personal environment
+files, private keys, and logs out of the report and repository.
 
 ## Final handoff
 
@@ -120,8 +122,8 @@ does not prove that the reviewer can open it.
 - [x] Example requests and observed responses included.
 - [x] Automated, actual-model, and fresh-environment checks recorded.
 - [x] Native Google Docs report created and conversion inspected.
-- [ ] Manager access to the repository and report verified.
-- [ ] Final changes committed and pushed; working tree checked.
+- [x] Public repository visibility and report link access verified.
+- [x] Final changes committed and pushed; working tree checked.
 - [ ] Repository and Google Docs links sent to the manager.
 
 Independent relevance review, larger evaluations, better source deduplication,
